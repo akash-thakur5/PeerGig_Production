@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#fbf8fc",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#eae7eb",
+                        "surface-dim": "#dcd9dd",
+                        "inverse-surface": "#303033",
+                        "outline": "#897362",
+                        "on-primary-container": "#623200",
+                        "outline-variant": "#ddc1ae",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#fbf8fc",
+                        "surface-container": "#f0edf1",
+                        "primary": "#904d00",
+                        "on-background": "#1b1b1e",
+                        "inverse-on-surface": "#f3f0f4",
+                        "secondary-container": "#e4e1e6",
+                        "on-surface": "#1b1b1e",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "surface-tint": "#904d00",
+                        "tertiary-container": "#00b5fc",
+                        "secondary": "#5f5e61",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-primary-fixed": "#2f1500",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-tertiary-fixed": "#001e2e",
+                        "on-tertiary-container": "#004360",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e4e1e6",
+                        "secondary-fixed": "#e4e1e6",
+                        "primary-fixed-dim": "#ffb77d",
+                        "inverse-primary": "#ffb77d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffdcc3",
+                        "tertiary-fixed": "#c7e7ff",
+                        "surface": "#fbf8fc",
+                        "on-surface-variant": "#564334",
+                        "surface-variant": "#e4e1e6",
+                        "primary-container": "#ff8c00",
+                        "on-secondary-container": "#656467",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f6f2f7",
+                        "tertiary": "#00658f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+    <!-- TopNavBar -->
+    <header
+        class="fixed top-0 w-full z-50 bg-[#ffffff]/80 backdrop-blur-md font-['Manrope'] tracking-tight bg-[#f6f2f7] shadow-sm shadow-[#1b1b1e]/5">
+        <div class="flex justify-between items-center px-8 h-16 w-full">
+            <div class="flex items-center gap-8">
+                <span class="text-2xl font-bold tracking-tighter text-[#1b1b1e]">PeerGig</span>
+                <div
+                    class="hidden md:flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/20">
+                    <span class="material-symbols-outlined text-secondary mr-2">search</span>
+                    <input class="bg-transparent border-none focus:ring-0 text-sm w-64" placeholder="Search sessions..."
+                        type="text" />
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex gap-8">
+                    <a class="text-[#5f5e61] hover:text-[#904d00] transition-colors duration-200" href="#">Explore</a>
+                    <a class="text-[#904d00] font-bold border-b-2 border-[#904d00]" href="#">Tutor Dashboard</a>
+                    <a class="text-[#5f5e61] hover:text-[#904d00] transition-colors duration-200" href="#">My
+                        Learning</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="material-symbols-outlined text-secondary hover:text-primary transition-colors">notifications</button>
+                    <button
+                        class="material-symbols-outlined text-secondary hover:text-primary transition-colors">mail</button>
+                    <div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary-container">
+                        <img alt="User tutor profile avatar" class="h-full w-full object-cover"
+                            data-alt="Close up portrait of a smiling academic professional with glasses and a soft studio background, warm lighting"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZyFBgxzScb4raOU0ynwMWBR6CTMIYsAW4Y9BzVuY2kWgQY5fquytQWrG7GCp7Ve8tvqGI0GwXQeaQ8pSXZgSRTXdswEsqRulv1_YDzwrE0FUAUiIAuWsAB3qYyWQHlmcvC10jkvnufV3nJjh7ZkjdGZ6l29uhOKngAmJTeWPbrpoJfDXFxzrc5q1wnvrotm9AWW8i4pjIUhItZcqfXoiCVk1IAm2r3LbMZWFgmiB64jGZS3UkmlFPw0xqxoXLkbfYSQZc-i4wg9Q" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="flex min-h-screen pt-16">
+        <!-- SideNavBar -->
+        <aside
+            class="h-screen w-64 fixed left-0 top-0 pt-20 bg-[#fbf8fc] border-r border-[#1b1b1e]/5 font-['Inter'] text-sm font-medium">
+            <div class="px-6 mb-8">
+                <h2 class="text-xl font-bold text-on-surface">Tutor Studio</h2>
+                <p class="text-xs text-secondary/70">Academic Authority</p>
+            </div>
+            <nav class="flex flex-col gap-2 pr-4">
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span>Dashboard</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#1b1b1e] bg-[#f6f2f7] rounded-r-full font-bold transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">school</span>
+                    <span>Become Tutor</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">person_add</span>
+                    <span>Become Student</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">swap_horiz</span>
+                    <span>Skillswap</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">group</span>
+                    <span>Peer Connect</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                    <span>Wallet</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-[#5f5e61] hover:bg-[#f6f2f7]/50 hover:translate-x-1 transition-all duration-200"
+                    href="#">
+                    <span class="material-symbols-outlined">description</span>
+                    <span>Notes</span>
+                </a>
+            </nav>
+        </aside>
+        <!-- Main Content Area -->
+        <main class="ml-64 flex-1 p-10 bg-background">
+            <!-- Header Section -->
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface mb-2">Tutor
+                        Dashboard</h1>
+                    <p class="text-lg text-secondary">Manage your gigs and track your earnings.</p>
+                </div>
+                <button
+                    class="flex items-center gap-2 bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-3 rounded-xl font-semibold shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all active:scale-95">
+                    <span class="material-symbols-outlined">add</span>
+                    Create New Gig
+                </button>
+            </div>
+            <!-- Quick Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_40px_40px_-20px_rgba(27,27,30,0.04)] border border-outline-variant/10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-primary-fixed rounded-xl text-primary">
+                            <span class="material-symbols-outlined">account_balance_wallet</span>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-widest text-secondary">Total Earned</span>
+                    </div>
+                    <div class="text-3xl font-headline font-bold text-on-surface">$450.00</div>
+                </div>
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_40px_40px_-20px_rgba(27,27,30,0.04)] border border-outline-variant/10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-tertiary-fixed rounded-xl text-tertiary">
+                            <span class="material-symbols-outlined">book</span>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-widest text-secondary">Active Gigs</span>
+                    </div>
+                    <div class="text-3xl font-headline font-bold text-on-surface">3</div>
+                </div>
+                <div
+                    class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_40px_40px_-20px_rgba(27,27,30,0.04)] border border-outline-variant/10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-primary-fixed rounded-xl text-primary">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">star</span>
+                        </div>
+                        <span class="text-sm font-semibold uppercase tracking-widest text-secondary">Tutor Rating</span>
+                    </div>
+                    <div class="text-3xl font-headline font-bold text-on-surface">4.9 / 5.0</div>
+                </div>
+            </div>
+            <!-- Your Active Gigs Section -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-headline font-bold mb-6">Your Active Gigs</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Gig Card 1 -->
+                    <div
+                        class="bg-surface-container-lowest p-6 rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10">
+                        <div class="flex items-center gap-6">
+                            <div class="h-16 w-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                <img alt="React coding visual" class="h-12 w-12 object-contain"
+                                    data-alt="Stylized blue abstract representation of a molecular structure or coding patterns with soft glow and clean white background"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6tuPJxnPBZJveTiJmv-a8S-JnigAyjCwiPXt6Ay18IR_mBy5x-uOk980KYNKRJ9CmnIfxrUSP9Slso8gZsh4aOgpckC8utO1YfvpwoZqq9KN8Cd0SnD33idKfiRG9TSrw8kU1UHg6-Nuq0aQvLYX1S6i0Vdc_DdWAKF5HzRgjcwgOd5PWLS13k2a31k8fHnJy7hlCpamA_OYD6IiF_xtNTaOtqx_Hekec_Uhv5mln3cB7EssORadGT9BRYXf_xsET_lAZb8gATYE" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-on-surface">Advanced React Hooks</h3>
+                                <div class="flex gap-2 mt-1">
+                                    <span
+                                        class="px-3 py-0.5 bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold uppercase tracking-wider rounded-full">Computer
+                                        Science</span>
+                                    <span
+                                        class="px-3 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-12">
+                            <div class="text-right">
+                                <div class="text-sm text-secondary font-medium">Rate</div>
+                                <div class="font-bold text-primary">$50/session</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="px-4 py-2 border border-outline-variant text-primary font-semibold rounded-lg hover:bg-primary-fixed/30 transition-colors">Edit</button>
+                                <button class="p-2 text-secondary hover:text-on-surface">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Gig Card 2 -->
+                    <div
+                        class="bg-surface-container-lowest p-6 rounded-xl flex items-center justify-between shadow-sm hover:shadow-md transition-shadow border border-outline-variant/10">
+                        <div class="flex items-center gap-6">
+                            <div class="h-16 w-16 bg-surface-container-low rounded-xl flex items-center justify-center">
+                                <img alt="Data science visual" class="h-12 w-12 object-contain"
+                                    data-alt="Minimalist data visualization with rising orange bar charts and smooth gray curves on a bright clean background"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA04nnTOCHpyxbcXK01tLSmwNex5pFytz6RAy-HDZVjgdix6XlRD2naLfMJLEdUanePfqPGH36WLBVi-Y2HWTV6g3UCvlD2PxyPk5gODpNpnr1_ZozcIehxmMMRE4ez7x7hTE3THBHiBAGY--lQUPzZKMKZY8ffSkLWjn4vi_VN0W1kcr5mgMyI3D3q6RNzjOf4ZDCVEJOZHPfNWapVbG5zK0GEOfKoMponcOHMQWYazxXgENFjYL560o4v7ooVkDuGL6RhrYux-8" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-on-surface">Data Structures &amp; Algorithms</h3>
+                                <div class="flex gap-2 mt-1">
+                                    <span
+                                        class="px-3 py-0.5 bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold uppercase tracking-wider rounded-full">Computer
+                                        Science</span>
+                                    <span
+                                        class="px-3 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-12">
+                            <div class="text-right">
+                                <div class="text-sm text-secondary font-medium">Rate</div>
+                                <div class="font-bold text-primary">$65/session</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    class="px-4 py-2 border border-outline-variant text-primary font-semibold rounded-lg hover:bg-primary-fixed/30 transition-colors">Edit</button>
+                                <button class="p-2 text-secondary hover:text-on-surface">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Upcoming Sessions Section -->
+            <div
+                class="bg-surface-container-lowest rounded-2xl shadow-[0_40px_80px_-20px_rgba(27,27,30,0.05)] overflow-hidden border border-outline-variant/5">
+                <div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+                    <h2 class="text-xl font-headline font-bold">Upcoming Sessions</h2>
+                    <a class="text-sm font-semibold text-primary hover:underline" href="#">View Calendar</a>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-surface-container-low/30">
+                                <th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-secondary/60">
+                                    Student Name</th>
+                                <th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-secondary/60">
+                                    Topic</th>
+                                <th class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-secondary/60">
+                                    Date/Time</th>
+                                <th
+                                    class="px-8 py-4 text-xs font-bold uppercase tracking-widest text-secondary/60 text-right">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline-variant/10">
+                            <tr class="hover:bg-surface-container-low/20 transition-colors">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="h-8 w-8 rounded-full bg-secondary-container flex items-center justify-center text-xs font-bold text-secondary">
+                                            AC</div>
+                                        <span class="font-semibold">Alex Chen</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-on-surface/80">React Hooks</td>
+                                <td class="px-8 py-5 font-medium">Today, 2:00 PM</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button
+                                        class="inline-flex items-center gap-2 px-4 py-2 border border-primary-container text-primary-container font-bold rounded-lg hover:bg-primary-container hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-lg">videocam</span>
+                                        Start Meeting
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low/20 transition-colors">
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="h-8 w-8 rounded-full bg-tertiary-fixed-dim flex items-center justify-center text-xs font-bold text-on-tertiary-fixed">
+                                            LW</div>
+                                        <span class="font-semibold">Linda Wu</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-on-surface/80">Async/Await Patterns</td>
+                                <td class="px-8 py-5 font-medium">Tomorrow, 10:30 AM</td>
+                                <td class="px-8 py-5 text-right">
+                                    <button class="px-4 py-2 text-secondary font-bold hover:text-on-surface">View
+                                        Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

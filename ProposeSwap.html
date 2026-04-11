@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Swap Gig Info | PeerGig</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f6f2f7",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "outline": "#897362",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#623200",
+                        "surface-container": "#f0edf1",
+                        "primary-fixed": "#ffdcc3",
+                        "primary-fixed-dim": "#ffb77d",
+                        "surface-variant": "#e4e1e6",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "surface-container-highest": "#e4e1e6",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#ddc1ae",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#c7e7ff",
+                        "secondary-container": "#e4e1e6",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-secondary-container": "#656467",
+                        "background": "#fbf8fc",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#eae7eb",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#001e2e",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "inverse-primary": "#ffb77d",
+                        "on-surface-variant": "#564334",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-tertiary-container": "#004360",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#00658f",
+                        "primary-container": "#ff8c00",
+                        "inverse-on-surface": "#f3f0f4",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#904d00",
+                        "surface-bright": "#fbf8fc",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "on-primary-fixed": "#2f1500",
+                        "inverse-surface": "#303033",
+                        "surface-dim": "#dcd9dd",
+                        "tertiary-container": "#00b5fc",
+                        "on-surface": "#1b1b1e",
+                        "on-background": "#1b1b1e",
+                        "surface": "#fbf8fc",
+                        "secondary": "#5f5e61",
+                        "primary": "#904d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf8fc;
+            color: #1b1b1e;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl flex items-center justify-between px-6 h-16 w-full shadow-sm shadow-slate-200/50">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl font-bold tracking-tighter text-slate-900 font-manrope">PeerGig</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8 font-manrope tracking-tight">
+            <a class="text-slate-500 hover:text-slate-900 transition-colors" href="#">Dashboard</a>
+            <a class="text-slate-500 hover:text-slate-900 transition-colors" href="#">Tutors</a>
+            <a class="text-orange-600 font-semibold border-b-2 border-orange-600" href="#">Skillswap</a>
+            <a class="text-slate-500 hover:text-slate-900 transition-colors" href="#">Peer Connect</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <button
+                class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95 duration-200">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            </button>
+            <button
+                class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95 duration-200">
+                <span class="material-symbols-outlined" data-icon="chat">chat</span>
+            </button>
+            <img alt="User profile" class="w-8 h-8 rounded-full bg-slate-200 object-cover"
+                data-alt="close-up portrait of a professional male user in a clean studio setting with soft lighting"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1qYlUx62lOqvVD6JX5fcSya0xHQxicabRAZgYHcUdAqcFs8tD0qWxxLUXkduj-jp6GCgrq8LCLpNn7g1bSft-ornDaKjpX73S9AfAdK57j4RHez4ceNMFYIjIypWav5xaLfqQpZ4awwwZ6Jpw1YC_sE7j3geKyDvbW1vN9-Gmz8hKxgDAxZaYzjKNRhNhU2hyks3sGT98G9TDBiJ6EEfpViMClmII3C9jjAAoJ95F-5tMGbsEuCTWbrgft2XaKdkJgiKZ-8GNTAw" />
+        </div>
+    </nav>
+    <!-- SideNavBar (Desktop Only) -->
+    <aside
+        class="hidden md:flex fixed left-0 h-full w-64 pt-20 flex-col gap-2 p-4 bg-slate-50 border-r border-slate-200 z-40">
+        <div class="mb-6 px-2">
+            <h3 class="text-lg font-manrope font-extrabold text-slate-900">The Digital Atelier</h3>
+            <p class="text-xs text-slate-500 font-medium tracking-wide uppercase">Academic Marketplace</p>
+        </div>
+        <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span class="font-inter text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="school">school</span>
+                <span class="font-inter text-sm font-medium">Become Tutor</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+                <span class="font-inter text-sm font-medium">Become Student</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 bg-white text-orange-600 shadow-sm rounded-lg my-1 hover:translate-x-1 duration-200"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="swap_calls">swap_calls</span>
+                <span class="font-inter text-sm font-medium">Skillswap</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="groups">groups</span>
+                <span class="font-inter text-sm font-medium">Peer Connect</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+                <span class="font-inter text-sm font-medium">Wallet</span>
+            </a>
+            <a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-100 hover:translate-x-1 duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="description">description</span>
+                <span class="font-inter text-sm font-medium">Notes</span>
+            </a>
+        </div>
+    </aside>
+    <!-- Main Content Canvas -->
+    <main class="pt-24 pb-12 px-6 md:ml-64 max-w-7xl mx-auto">
+        <!-- Back Link Header -->
+        <header class="mb-8">
+            <a class="group flex items-center gap-2 text-secondary font-medium text-sm hover:text-primary transition-colors"
+                href="#">
+                <span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform"
+                    data-icon="arrow_back">arrow_back</span>
+                &lt; Back to Skillswap Dashboard
+            </a>
+        </header>
+        <div class="flex flex-col lg:flex-row gap-12">
+            <!-- Left Column: Swap Details (70%) -->
+            <section class="lg:w-[70%]">
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter leading-tight mb-10 text-on-surface">
+                    Swap: Python Data Analysis for <span class="text-orange-600">Figma UI/UX</span>
+                </h1>
+                <!-- Offer Section -->
+                <div class="bg-surface-container-low p-8 rounded-2xl mb-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16"></div>
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-white rounded-xl shadow-sm text-orange-600">
+                            <span class="material-symbols-outlined text-3xl" data-icon="school">school</span>
+                        </div>
+                        <div>
+                            <span
+                                class="text-[0.6875rem] font-bold tracking-widest text-orange-600 uppercase mb-1 block">The
+                                Expertise</span>
+                            <h2 class="text-xl font-bold mb-3">They can teach: Python Data Analysis | Proficiency:
+                                Expert</h2>
+                            <p class="text-secondary leading-relaxed max-w-2xl">
+                                I can guide you through Pandas, NumPy, and data cleaning workflows. Whether you're
+                                struggling with messy CSVs or want to build automated visualization pipelines in
+                                Matplotlib, I'll show you the industry-standard "Pythonic" way to handle big data.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Visual Separator -->
+                <div class="flex justify-center my-6">
+                    <div
+                        class="bg-surface-container-high w-12 h-12 rounded-full flex items-center justify-center text-primary-container">
+                        <span class="material-symbols-outlined text-2xl font-bold"
+                            data-icon="arrow_downward">arrow_downward</span>
+                    </div>
+                </div>
+                <!-- Request Section -->
+                <div
+                    class="bg-surface-container-lowest p-8 rounded-2xl shadow-sm border border-outline-variant/20 mb-10">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-surface-container-low rounded-xl text-primary">
+                            <span class="material-symbols-outlined text-3xl" data-icon="book_5">book_5</span>
+                        </div>
+                        <div>
+                            <span
+                                class="text-[0.6875rem] font-bold tracking-widest text-primary uppercase mb-1 block">The
+                                Learning Goal</span>
+                            <h2 class="text-xl font-bold mb-3">They want to learn: UI/UX Design in Figma | Current
+                                Level: Complete Beginner</h2>
+                            <p class="text-secondary leading-relaxed max-w-2xl">
+                                I need someone to teach me auto-layout, component libraries, and basic prototyping. I'm
+                                building a personal portfolio site and want it to look professional rather than
+                                "developer-made."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Commitment Info -->
+                <div
+                    class="flex items-center gap-3 p-4 bg-surface-container-low/50 rounded-xl mb-12 border-l-4 border-orange-600">
+                    <span class="material-symbols-outlined text-orange-600" data-icon="schedule">schedule</span>
+                    <span class="font-medium text-on-surface">Expected Commitment: <span
+                            class="font-bold text-orange-600">1 hour per week</span></span>
+                </div>
+                <!-- CTA -->
+                <button
+                    class="group flex items-center gap-3 px-10 py-5 bg-gradient-to-br from-primary to-primary-container text-white font-bold rounded-xl shadow-lg hover:-translate-y-1 transition-all active:scale-95 duration-200">
+                    <span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+                    <span class="text-lg">Propose Swap</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-2 transition-transform"
+                        data-icon="arrow_forward">arrow_forward</span>
+                </button>
+            </section>
+            <!-- Right Column: Profile & Info (30%) -->
+            <aside class="lg:w-[30%]">
+                <div class="sticky top-24">
+                    <div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/20">
+                        <!-- Profile Header -->
+                        <div class="flex flex-col items-center text-center mb-8">
+                            <div class="relative mb-4">
+                                <img alt="Sarah Jenkins"
+                                    class="w-24 h-24 rounded-full object-cover border-4 border-surface-container-low shadow-sm"
+                                    data-alt="professional headshot of a smiling woman with dark hair against a soft studio background, high-end professional photography style"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaJU9I9yONKMZamKq3Jw77eh2SQk6SZ2mCsnRDNkowaKw6oYuI9lBTa-Xnj-rHguqbEEu4ucnxSTCKnCT-LRbH-vxskKqVrObcbfrt-TJGovChfJ78et_yvucA1rtI0rMZqkPEYnWWqKuOuQcUbsjO_XJeOznhZrqi6QwQpZ5o1slgC_jNJQPs-gnc-wIAd_Y-mcUGqczvN0x92i-55-RbwXZCjJqezDTeT5lKCRzlhtNPyuLUXzXk-z11ji5aX7YWYIXZVrU2zGY" />
+                                <div
+                                    class="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-white">
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-1">Sarah Jenkins</h3>
+                            <div
+                                class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-low rounded-full">
+                                <span class="material-symbols-outlined text-orange-500 text-sm" data-icon="stars"
+                                    data-weight="fill" style="font-variation-settings: 'FILL' 1;">stars</span>
+                                <span class="text-xs font-bold text-on-surface-variant">Swap Rating: 4.9 ★ (12
+                                    Swaps)</span>
+                            </div>
+                        </div>
+                        <!-- Credentials -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center gap-3 text-secondary text-sm">
+                                <span class="material-symbols-outlined text-primary" data-icon="school">school</span>
+                                <span>M.Sc. Data Science</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-secondary text-sm">
+                                <span class="material-symbols-outlined text-primary"
+                                    data-icon="account_balance">account_balance</span>
+                                <span>Tech University</span>
+                            </div>
+                        </div>
+                        <!-- Bio -->
+                        <div class="border-t border-surface-container-high pt-6">
+                            <h4 class="text-sm font-bold uppercase tracking-wider mb-3 text-on-surface">About Sarah</h4>
+                            <p class="text-sm text-secondary leading-relaxed">
+                                Lead analyst with 5 years of experience in data visualization. Passionate about
+                                cross-disciplinary learning and looking to refine my design eye.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Trust Badge -->
+                    <div class="mt-6 p-4 bg-orange-50 rounded-xl flex items-center gap-3">
+                        <span class="material-symbols-outlined text-orange-600"
+                            data-icon="verified_user">verified_user</span>
+                        <span class="text-xs font-semibold text-orange-800">PeerGig Identity Verified</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <!-- Mobile Navigation (hidden on MD+) -->
+    <nav
+        class="md:hidden fixed bottom-0 w-full bg-white border-t border-slate-100 flex justify-around items-center h-16 px-4 z-50">
+        <button class="flex flex-col items-center gap-1 text-slate-400">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="text-[10px] font-medium">Home</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-orange-600">
+            <span class="material-symbols-outlined" data-icon="swap_calls">swap_calls</span>
+            <span class="text-[10px] font-medium">Skillswap</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-slate-400">
+            <span class="material-symbols-outlined" data-icon="chat">chat</span>
+            <span class="text-[10px] font-medium">Chats</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-slate-400">
+            <span class="material-symbols-outlined" data-icon="person">person</span>
+            <span class="text-[10px] font-medium">Profile</span>
+        </button>
+    </nav>
+</body>
+
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>PeerGig - Become Student</title>
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1b1b1e",
+                        "surface-container-highest": "#e4e1e6",
+                        "secondary-fixed": "#e4e1e6",
+                        "inverse-primary": "#ffb77d",
+                        "surface-tint": "#904d00",
+                        "surface-container": "#f0edf1",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "primary-fixed": "#ffdcc3",
+                        "on-tertiary-container": "#004360",
+                        "outline-variant": "#ddc1ae",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f6f2f7",
+                        "on-primary-container": "#623200",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#564334",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "surface-variant": "#e4e1e6",
+                        "on-primary": "#ffffff",
+                        "secondary": "#5f5e61",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#656467",
+                        "secondary-container": "#e4e1e6",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f3f0f4",
+                        "surface": "#fbf8fc",
+                        "inverse-surface": "#303033",
+                        "tertiary-fixed": "#c7e7ff",
+                        "on-tertiary-fixed": "#001e2e",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "outline": "#897362",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "on-primary-fixed": "#2f1500",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#eae7eb",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fbf8fc",
+                        "on-surface": "#1b1b1e",
+                        "background": "#fbf8fc",
+                        "tertiary-container": "#00b5fc",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#904d00",
+                        "primary-container": "#ff8c00",
+                        "surface-dim": "#dcd9dd",
+                        "tertiary": "#00658f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body min-h-screen">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-20 w-full bg-[#ffffff]/80 dark:bg-zinc-950/80 backdrop-blur-md shadow-[0_40px_40px_-15px_rgba(27,27,30,0.04)]">
+        <div class="flex items-center gap-8">
+            <span
+                class="text-2xl font-black text-[#1b1b1e] dark:text-zinc-100 font-headline tracking-tight">PeerGig</span>
+            <div class="hidden md:flex gap-6 text-[#5f5e61]">
+                <a class="text-[#904d00] font-bold border-b-2 border-[#ff8c00] transition-colors duration-200"
+                    href="#">Explore</a>
+                <a class="text-[#5f5e61] hover:text-[#904d00] transition-colors duration-200" href="#">Mentors</a>
+                <a class="text-[#5f5e61] hover:text-[#904d00] transition-colors duration-200" href="#">Resources</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="p-2 text-[#5f5e61] hover:text-[#904d00] transition-colors"><span
+                    class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+            <button class="p-2 text-[#5f5e61] hover:text-[#904d00] transition-colors"><span
+                    class="material-symbols-outlined" data-icon="chat">chat</span></button>
+            <div class="h-10 w-10 rounded-full bg-surface-container overflow-hidden">
+                <img class="w-full h-full object-cover"
+                    data-alt="professional portrait of a young male student in a bright studio setting"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLGFj3bFY26EelUWXNFUFVCj3rV7dseE-nG46kvlzbh0hQj_MW-kBUrlBRipo_WQqH3i0wRVg-RecKEHz9ouDcKYuKopt8ZkftCW5lVfNhAMXKIuCuhRoZu4JdGzO-Mq4B6euGNwZgz2CNIoQqqn9oA0X9ATu9bA2tQX5Wj3naOSGNn4vmvxmfHUdsjzktlcXAVi6evVjg7tKA7wofXxOBeoGUI1aJicEu-zuBeozCH2TopgagBaVU0MmtNDTghpU6c976tYBrkJ0" />
+            </div>
+        </div>
+    </nav>
+    <!-- SideNavBar -->
+    <aside
+        class="fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 bg-[#fbf8fc] dark:bg-zinc-950 flex flex-col p-6 space-y-2 no-border tonal-shift bg-[#f6f2f7] dark:bg-zinc-900">
+        <div class="mb-8 px-2">
+            <h2 class="font-headline font-extrabold text-[#1b1b1e] text-xl">The Atelier</h2>
+            <p class="text-xs text-secondary tracking-wide uppercase font-medium">Academic Authority</p>
+        </div>
+        <nav class="flex-1 space-y-1">
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="dashboard">dashboard</span> Dashboard
+            </a>
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="school">school</span> Become Tutor
+            </a>
+            <!-- Active State: Become Student -->
+            <a class="flex items-center gap-3 p-3 bg-white dark:bg-zinc-900 text-[#904d00] font-bold shadow-sm rounded-lg hover:translate-x-1 transition-transform duration-200 text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="person_search">person_search</span> Become
+                Student
+            </a>
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="swap_horiz">swap_horiz</span> Skillswap
+            </a>
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="group">group</span> Peer Connect
+            </a>
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg"
+                    data-icon="account_balance_wallet">account_balance_wallet</span> Wallet
+            </a>
+            <a class="flex items-center gap-3 p-3 text-[#5f5e61] hover:translate-x-1 transition-transform duration-200 font-medium text-sm"
+                href="#">
+                <span class="material-symbols-outlined text-lg" data-icon="description">description</span> Notes
+            </a>
+        </nav>
+        <div class="pt-6">
+            <button
+                class="w-full py-3 px-4 bg-gradient-to-br from-[#904d00] to-[#ff8c00] text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-md hover:-translate-y-0.5 transition-all">
+                Upgrade to Premium
+            </button>
+        </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="ml-64 mt-20 p-10 bg-background min-h-[calc(100vh-5rem)]">
+        <div class="max-w-7xl mx-auto grid grid-cols-12 gap-8">
+            <!-- Left Column: Search and Gigs -->
+            <div class="col-span-12 lg:col-span-8 space-y-10">
+                <!-- Header & Search -->
+                <header class="space-y-6">
+                    <h1 class="text-5xl font-headline font-black text-on-surface tracking-tight leading-tight">
+                        Find a Topic to <span class="text-primary italic">Learn</span>
+                    </h1>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="relative flex-1 group">
+                            <span
+                                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary group-focus-within:text-primary transition-colors"
+                                data-icon="search">search</span>
+                            <input
+                                class="w-full pl-12 pr-4 py-4 bg-white border-0 border-b-2 border-outline-variant/30 focus:border-primary focus:ring-0 text-on-surface placeholder:text-secondary/60 transition-all text-lg"
+                                placeholder="What do you want to learn today? (e.g., React Hooks, Thermodynamics)"
+                                type="text" />
+                        </div>
+                        <div class="flex gap-2">
+                            <button
+                                class="flex items-center gap-2 px-6 py-4 bg-white border border-outline-variant/20 rounded-xl hover:border-primary/50 transition-all text-sm font-medium">
+                                Subject <span class="material-symbols-outlined text-sm"
+                                    data-icon="expand_more">expand_more</span>
+                            </button>
+                            <button
+                                class="flex items-center gap-2 px-6 py-4 bg-white border border-outline-variant/20 rounded-xl hover:border-primary/50 transition-all text-sm font-medium">
+                                Max Price <span class="material-symbols-outlined text-sm"
+                                    data-icon="expand_more">expand_more</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+                <!-- Available Gigs Feed -->
+                <section class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <h2 class="text-xl font-headline font-bold text-on-surface">Trending Gigs</h2>
+                        <span class="text-xs font-label uppercase tracking-widest text-secondary">248 Available
+                            Today</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Card 1 -->
+                        <div
+                            class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-surface-container-low group hover:shadow-xl transition-all duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-3 py-1 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Computer
+                                    Science</span>
+                                <span class="text-2xl font-black text-primary">$2</span>
+                            </div>
+                            <h3
+                                class="text-xl font-headline font-bold text-on-surface mb-4 leading-snug group-hover:text-primary transition-colors">
+                                Mastering React Hooks &amp; State Management</h3>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                                        <img class="w-full h-full object-cover"
+                                            data-alt="close-up of a friendly male tutor with glasses in a modern office environment"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjayKoK_4cWMwcoBvbSw6ao4MrtdFhDcr1bEFejpzsgU91Dn3brgB_nwo3uUD6XGL5UYoC3IDg-RbfCXJX8pCLmzOcHhlB2FU7NQ5Ug3ZLba-locnF7VvHcizyw2VrPUN4eVTXHkUVqkYd0EYG9R6-IMekGv4oyO-o_OXr_zGRTYrJqCaHKJoNNFNcTFiTzC2MwsxYBP816EO7fTg3vUvaRK0gZXD0ZfmUPzWM_jjnnRrBk0d608E6B4bJTje7HmL-PEWkJe69oPs" />
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-on-surface">Alex Rivera</p>
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-[#ff8c00]"
+                                                data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="text-[10px] font-bold text-secondary">4.9 (124)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-5 py-2.5 bg-[#ff8c00] text-white text-xs font-bold rounded-lg shadow-lg shadow-orange-500/20 active:scale-95 transition-all">Book
+                                    Session</button>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div
+                            class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-surface-container-low group hover:shadow-xl transition-all duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-3 py-1 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Mathematics</span>
+                                <span class="text-2xl font-black text-primary">$15</span>
+                            </div>
+                            <h3
+                                class="text-xl font-headline font-bold text-on-surface mb-4 leading-snug group-hover:text-primary transition-colors">
+                                Multivariable Calculus: Vector Fields</h3>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                                        <img class="w-full h-full object-cover"
+                                            data-alt="professional headshot of a smiling female academic with a warm friendly expression"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkDgGbD1vPmNA7mjkFoI1W1VDDj5Fa2UKVUSuybzRbkisulSDYHvdyyQwZlIi5kU2atWO_jfcxAp5M2A4jl7GTzcFdIM1eNIxvAGs44GSNwsEkBKX6sl6rMVEuiuMZeOukVOHhYtrGPHI8Jvuypz8B6bMbzZSE7qaDSEcilbd6syMS8ZiDOg-rjes_oEHEGYKEf_cePi2pRt1_es20UPgxk47clUv2nZy6Rj0NgxYlQWPHFKp0SZJVqkpn47zWfd400ka8wYhyAyI" />
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-on-surface">Dr. Sarah Chen</p>
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-[#ff8c00]"
+                                                data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="text-[10px] font-bold text-secondary">5.0 (89)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-5 py-2.5 bg-[#ff8c00] text-white text-xs font-bold rounded-lg shadow-lg shadow-orange-500/20 active:scale-95 transition-all">Book
+                                    Session</button>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div
+                            class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-surface-container-low group hover:shadow-xl transition-all duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-3 py-1 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Digital
+                                    Arts</span>
+                                <span class="text-2xl font-black text-primary">$25</span>
+                            </div>
+                            <h3
+                                class="text-xl font-headline font-bold text-on-surface mb-4 leading-snug group-hover:text-primary transition-colors">
+                                Character Design for Games with Procreate</h3>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                                        <img class="w-full h-full object-cover"
+                                            data-alt="creative professional with a stylish beard looking at the camera in a modern loft studio"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbBybghtXt6EXLbi61VeKHPywc-YC_3hrQYxRaWSYIEp3Vlam0bBZhudyDXPMFJRyxWhTv460YkAYSnzhNhaANAB7aBWjDb6T9Eqwx0aZjTzXeADtogg_FkgIqzhxwp5HvYGXb5VhUKe2q4VgRm9b_nk3QrItp8Jh7913RZHlvvJQvrJ8SgyKH42aB7qpp4fczFXVNYCyb4U3RKP8oQuaT8iyCJtjjpmTzffu4HTNcGHQyBI-uUrvPfMwmS-biu_hJ0rdCtm93gpY" />
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-on-surface">Marcus Thorne</p>
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-[#ff8c00]"
+                                                data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="text-[10px] font-bold text-secondary">4.8 (210)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-5 py-2.5 bg-[#ff8c00] text-white text-xs font-bold rounded-lg shadow-lg shadow-orange-500/20 active:scale-95 transition-all">Book
+                                    Session</button>
+                            </div>
+                        </div>
+                        <!-- Card 4 -->
+                        <div
+                            class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-surface-container-low group hover:shadow-xl transition-all duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-3 py-1 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">Marketing</span>
+                                <span class="text-2xl font-black text-primary">$12</span>
+                            </div>
+                            <h3
+                                class="text-xl font-headline font-bold text-on-surface mb-4 leading-snug group-hover:text-primary transition-colors">
+                                SEO Fundamentals: Zero to Ranking</h3>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full border-2 border-white shadow-sm overflow-hidden">
+                                        <img class="w-full h-full object-cover"
+                                            data-alt="modern business woman with a confident smile in a bright minimalist office"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlYMh2POoak5iRSHz1QIooJYwvvUtgB69hW3RWuo9aNQ6W6lP1FHgt33iVq6oEtyR-LOhglJxSMkHBdFKXsyjLgVjGILTTFKQWhumZk3gxoJ39rv2P0RDCcgSsCAw4f1bElwViJk50ie0sD4zrosfphw1RSaBX9xRLHMs-NDPTXHXGHruQ3G9oDh5ZHrzszx3WU-gSOmJlJpQsoTdsw_kgpv-8RRBpXhrIaLuXXe6ibB1E5POEyOvdc1fjvxzL-3-qAfugfMOCRAY" />
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-on-surface">Lena Schmidt</p>
+                                        <div class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-sm text-[#ff8c00]"
+                                                data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                                            <span class="text-[10px] font-bold text-secondary">4.7 (56)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button
+                                    class="px-5 py-2.5 bg-[#ff8c00] text-white text-xs font-bold rounded-lg shadow-lg shadow-orange-500/20 active:scale-95 transition-all">Book
+                                    Session</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Right Column: Sidebar Tasks -->
+            <div class="col-span-12 lg:col-span-4 space-y-8">
+                <!-- Upcoming Sessions -->
+                <section
+                    class="bg-white rounded-3xl p-8 border border-surface-container-low shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-headline font-extrabold text-on-surface">Upcoming Sessions</h2>
+                        <span
+                            class="text-[10px] font-label uppercase tracking-widest bg-primary-fixed px-2 py-1 rounded text-primary">Live
+                            Today</span>
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Session Item 1 -->
+                        <div class="p-4 rounded-2xl bg-surface-container-low border-l-4 border-primary space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[10px] font-label uppercase tracking-widest text-secondary mb-1">In
+                                        15 Minutes</p>
+                                    <h4 class="font-bold text-on-surface">Advanced Figma Prototyping</h4>
+                                </div>
+                                <span class="material-symbols-outlined text-primary"
+                                    data-icon="video_camera_front">video_camera_front</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs font-medium text-secondary">
+                                <span class="material-symbols-outlined text-sm"
+                                    data-icon="calendar_today">calendar_today</span>
+                                Today, 4:30 PM
+                            </div>
+                            <button
+                                class="w-full py-3 flex items-center justify-center gap-2 border border-primary text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-sm" data-icon="videocam">videocam</span>
+                                Join Call
+                            </button>
+                        </div>
+                        <!-- Session Item 2 -->
+                        <div
+                            class="p-4 rounded-2xl bg-surface-container-lowest border border-surface-container-low space-y-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-[10px] font-label uppercase tracking-widest text-secondary mb-1">
+                                        Tomorrow</p>
+                                    <h4 class="font-bold text-on-surface">Physics: Quantum Entanglement</h4>
+                                </div>
+                                <span class="material-symbols-outlined text-secondary/40"
+                                    data-icon="schedule">schedule</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs font-medium text-secondary">
+                                <span class="material-symbols-outlined text-sm"
+                                    data-icon="calendar_today">calendar_today</span>
+                                Oct 24, 10:00 AM
+                            </div>
+                            <button
+                                class="w-full py-3 border border-outline-variant/30 text-secondary rounded-xl text-xs font-bold cursor-not-allowed opacity-50">
+                                Link Active at 09:45 AM
+                            </button>
+                        </div>
+                    </div>
+                    <a class="block text-center mt-6 text-xs font-bold text-primary hover:underline underline-offset-4"
+                        href="#">View All Learning History</a>
+                </section>
+                <!-- Learning Progress -->
+                <section class="bg-[#1b1b1e] rounded-3xl p-8 text-white relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="font-headline font-bold text-lg mb-2">Weekly Goal</h3>
+                        <p class="text-white/60 text-xs mb-6">4/6 hours completed this week</p>
+                        <div class="relative flex justify-center py-4">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle class="text-white/10" cx="64" cy="64" fill="transparent" r="58"
+                                    stroke="currentColor" stroke-width="8"></circle>
+                                <circle class="text-[#ff8c00]" cx="64" cy="64" fill="transparent" r="58"
+                                    stroke="currentColor" stroke-dasharray="364.4" stroke-dashoffset="121.5"
+                                    stroke-width="8"></circle>
+                            </svg>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                                <span class="text-2xl font-black">66%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary opacity-20 rounded-full blur-3xl">
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    <!-- FAB for Quick Actions -->
+    <button
+        class="fixed bottom-8 right-8 h-16 w-16 bg-gradient-to-br from-[#904d00] to-[#ff8c00] rounded-full shadow-2xl flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all z-50">
+        <span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+    </button>
+</body>
+
+</html>

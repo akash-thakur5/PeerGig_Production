@@ -1,0 +1,151 @@
+You are given a task to integrate an existing React component in the codebase
+
+The codebase should support:
+- shadcn project structure  
+- Tailwind CSS
+- Typescript
+
+If it doesn't, provide instructions on how to setup project via shadcn CLI, install Tailwind or Typescript.
+
+Determine the default path for components and styles. 
+If default path for components is not /components/ui, provide instructions on why it's important to create this folder
+Copy-paste this component to /components/ui folder:
+```tsx
+spinning-logos.tsx
+"use client"
+
+import React from 'react';
+import { 
+  Facebook, 
+  Youtube, 
+  Gamepad2, 
+  Code, 
+  Palette, 
+  Camera,
+  Zap
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+export const SpinningLogos: React.FC = () => {
+  const radiusToCenterOfIcons = 180;
+  const iconWrapperWidth = 60;
+  const ringPadding = 40;
+
+  const toRadians = (degrees: number): number => (Math.PI / 180) * degrees;
+
+  const logos = [
+    { Icon: Code, className: 'bg-purple-600 text-white', name: 'VSCode' },
+    { Icon: Palette, className: 'bg-red-600 text-white', name: 'Adobe' },
+    { Icon: Camera, className: 'bg-orange-600 text-white', name: 'Reddit' },
+    { Icon: Zap, className: 'bg-blue-600 text-white', name: 'Coinbase' },
+    { Icon: Gamepad2, className: 'bg-indigo-600 text-white', name: 'PlayStation' },
+    { Icon: Facebook, className: 'bg-blue-500 text-white', name: 'Facebook' },
+    { Icon: Youtube, className: 'bg-red-500 text-white', name: 'YouTube' },
+  ];
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-background p-8 overflow-hidden">
+      <div
+        style={{
+          width: radiusToCenterOfIcons * 2 + iconWrapperWidth + ringPadding,
+          height: radiusToCenterOfIcons * 2 + iconWrapperWidth + ringPadding,
+        }}
+        className="relative rounded-full bg-muted/50 shadow-lg border border-border"
+      >
+        <div className="absolute inset-0 animate-spin-slow">
+          {logos.map((logo, index) => {
+            const angle = (360 / logos.length) * index;
+            return (
+              <div
+                key={index}
+                style={{
+                  top: `calc(50% - ${iconWrapperWidth / 2}px + ${radiusToCenterOfIcons * Math.sin(toRadians(angle))}px)`,
+                  left: `calc(50% - ${iconWrapperWidth / 2}px + ${radiusToCenterOfIcons * Math.cos(toRadians(angle))}px)`,
+                  width: iconWrapperWidth,
+                  height: iconWrapperWidth,
+                }}
+                className={cn(
+                  "absolute flex items-center justify-center rounded-full shadow-md border-2 border-white dark:border-gray-800 animate-spin-reverse",
+                  logo.className
+                )}
+                aria-label={`${logo.name} logo`}
+              >
+                <logo.Icon className="w-6 h-6" />
+              </div>
+            );
+          })}
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="bg-background rounded-full w-3/5 h-3/5 flex items-center justify-center shadow-inner border-4 border-border">
+            <span className="text-2xl sm:text-3xl font-bold text-foreground text-center px-4">
+              YOUR LOGO
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+demo.tsx
+import { SpinningLogos } from "@/components/ui/spinning-logos";
+
+const SpinningLogosDemo = () => {
+  return (
+    <div className="flex w-full h-screen justify-center items-center">
+      <SpinningLogos />
+    </div>
+  );
+};
+
+export { SpinningLogosDemo };
+
+```
+
+Install NPM dependencies:
+```bash
+lucide-react
+```
+
+Extend existing Tailwind 4 index.css with this code (or if project uses Tailwind 3, extend tailwind.config.js or globals.css):
+```css
+@import "tailwindcss";
+@import "tw-animate-css";
+
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+```
+
+Implementation Guidelines
+ 1. Analyze the component structure and identify all required dependencies
+ 2. Review the component's argumens and state
+ 3. Identify any required context providers or hooks and install them
+ 4. Questions to Ask
+ - What data/props will be passed to this component?
+ - Are there any specific state management requirements?
+ - Are there any required assets (images, icons, etc.)?
+ - What is the expected responsive behavior?
+ - What is the best place to use this component in the app?
+
+Steps to integrate
+ 0. Copy paste all the code above in the correct directories
+ 1. Install external dependencies
+ 2. Fill image assets with Unsplash stock images you know exist
+ 3. Use lucide-react icons for svgs or logos if component requires them

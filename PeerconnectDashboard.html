@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Peer Connect | PeerGig</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#001e2e",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "on-tertiary-container": "#004360",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#904d00",
+                        "on-surface": "#1b1b1e",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-primary-fixed": "#2f1500",
+                        "secondary": "#5f5e61",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#00b5fc",
+                        "primary-container": "#ff8c00",
+                        "on-secondary-container": "#656467",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e4e1e6",
+                        "tertiary": "#00658f",
+                        "surface-container-low": "#f6f2f7",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e1e6",
+                        "secondary-fixed": "#e4e1e6",
+                        "primary-fixed-dim": "#ffb77d",
+                        "inverse-primary": "#ffb77d",
+                        "tertiary-fixed": "#c7e7ff",
+                        "surface": "#fbf8fc",
+                        "on-surface-variant": "#564334",
+                        "primary-fixed": "#ffdcc3",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#ddc1ae",
+                        "surface-bright": "#fbf8fc",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#eae7eb",
+                        "background": "#fbf8fc",
+                        "outline": "#897362",
+                        "on-primary-container": "#623200",
+                        "surface-dim": "#dcd9dd",
+                        "inverse-surface": "#303033",
+                        "on-background": "#1b1b1e",
+                        "inverse-on-surface": "#f3f0f4",
+                        "secondary-container": "#e4e1e6",
+                        "surface-container": "#f0edf1",
+                        "primary": "#904d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e4e1e6;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface selection:bg-primary/20">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-[0_40px_40px_-15px_rgba(27,27,30,0.04)] flex justify-between items-center px-8 h-20 w-full">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-black text-stone-900 dark:text-white tracking-tighter">PeerGig</span>
+            <div class="hidden md:flex items-center bg-stone-100 dark:bg-stone-800 rounded-full px-4 py-2 gap-2 w-80">
+                <span class="material-symbols-outlined text-stone-400">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-sm w-full"
+                    placeholder="Search gigs or peers..." type="text" />
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <button
+                class="material-symbols-outlined text-stone-600 dark:text-stone-400 hover:text-orange-500 transition-colors duration-200">notifications</button>
+            <button
+                class="material-symbols-outlined text-stone-600 dark:text-stone-400 hover:text-orange-500 transition-colors duration-200">chat</button>
+            <div class="flex items-center gap-2 pl-4 border-l border-stone-200 dark:border-stone-800">
+                <span class="material-symbols-outlined text-orange-600 text-3xl">account_circle</span>
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+    <aside
+        class="fixed left-0 top-20 h-[calc(100vh-80px)] w-64 bg-stone-50 dark:bg-stone-950 flex flex-col py-8 px-4 gap-2 border-r border-stone-100 dark:border-stone-800">
+        <div class="mb-6 px-4">
+            <h3 class="font-headline text-xs font-bold uppercase tracking-widest text-stone-400">The Atelier</h3>
+            <p class="text-[10px] text-stone-500 uppercase tracking-tighter">Academic Hub</p>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">school</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Become Tutor</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">person_add</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Become Student</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">swap_horiz</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Skillswap</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-orange-600 dark:text-orange-400 bg-white dark:bg-stone-900 shadow-sm rounded-lg hover:translate-x-1 transition-transform duration-200"
+                href="#">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Peer Connect</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Wallet</span>
+            </a>
+            <a class="flex items-center gap-3 py-3 px-4 text-stone-500 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-900/50 hover:translate-x-1 transition-transform duration-200 rounded-lg"
+                href="#">
+                <span class="material-symbols-outlined">description</span>
+                <span class="font-inter text-sm font-semibold uppercase tracking-wider">Notes</span>
+            </a>
+        </nav>
+        <div class="mt-auto p-4">
+            <button
+                class="w-full py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold text-sm shadow-lg shadow-orange-500/20 active:scale-95 transition-all">
+                Post a Gig
+            </button>
+        </div>
+    </aside>
+    <!-- Main Content Area (3-Pane Layout) -->
+    <main class="ml-64 mt-20 h-[calc(100vh-80px)] flex overflow-hidden">
+        <!-- Left Pane: Your Communities (25%) -->
+        <section class="w-1/4 bg-stone-50/50 border-r border-stone-200/50 flex flex-col">
+            <div class="p-6">
+                <h2 class="font-headline text-lg font-bold text-on-surface tracking-tight mb-6">Your Communities</h2>
+                <div class="space-y-2">
+                    <button
+                        class="w-full text-left p-4 rounded-xl bg-white border-l-4 border-primary shadow-sm flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                            <span class="text-primary font-bold text-xs">#</span>
+                        </div>
+                        <span class="font-semibold text-sm text-stone-900">Web Dev Seniors</span>
+                    </button>
+                    <button
+                        class="w-full text-left p-4 rounded-xl hover:bg-stone-100 transition-colors flex items-center gap-3 group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-stone-200 flex items-center justify-center group-hover:bg-stone-300">
+                            <span class="text-stone-500 font-bold text-xs">#</span>
+                        </div>
+                        <span class="font-medium text-sm text-stone-600">Advanced Calculus</span>
+                    </button>
+                    <button
+                        class="w-full text-left p-4 rounded-xl hover:bg-stone-100 transition-colors flex items-center gap-3 group">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-stone-200 flex items-center justify-center group-hover:bg-stone-300">
+                            <span class="text-stone-500 font-bold text-xs">#</span>
+                        </div>
+                        <span class="font-medium text-sm text-stone-600">UI/UX Enthusiasts</span>
+                    </button>
+                </div>
+                <button
+                    class="mt-8 w-full py-3 border border-dashed border-stone-300 rounded-xl text-stone-500 text-sm font-semibold hover:bg-stone-100 hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">add_circle</span>
+                    Discover Communities
+                </button>
+            </div>
+        </section>
+        <!-- Center Pane: Feed (50%) -->
+        <section class="flex-1 bg-white overflow-y-auto scroll-smooth">
+            <div class="max-w-2xl mx-auto py-8 px-6">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 class="font-headline text-2xl font-extrabold tracking-tight">Web Dev Seniors</h1>
+                        <p class="text-secondary text-sm">3,420 members • 128 active now</p>
+                    </div>
+                    <button class="p-2 rounded-full hover:bg-stone-100 text-stone-400 transition-colors">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+                <!-- Feed Cards -->
+                <div class="space-y-6">
+                    <!-- Post Card 1 -->
+                    <article
+                        class="bg-surface-container-lowest rounded-2xl p-6 border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img class="w-10 h-10 rounded-full object-cover ring-2 ring-white"
+                                    data-alt="professional portrait of a confident middle-aged developer with glasses and a friendly smile in a bright office"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0inAk0aGsgPKpwi-X_L4v-WiYoQyAlhyTOgoq-WY7TsGHNlhQ4Gj9TdEkmyMQr0tjOgFaZYr0h97lqi7WbtmEqRCPws1Se6lKTLRHnRzLacyDeZk5-RfYXtzI4giYU_GYnOusDMO3SYEoxW8niZeZMzjDxcAeLbu5rd1aEfeED4PEpe5FN3s47R3AfsY_F-us5gH8QltJO4ZNqZwC3mY83tMTe_I86ZpA7x7MhbMbNICTVjFYVYn4TXNr_QVeXsN1bSAy-M8WQWI" />
+                                <div>
+                                    <h4 class="font-bold text-sm text-stone-900 leading-none">Arjun Mehta</h4>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span
+                                            class="text-[10px] font-bold uppercase tracking-widest text-primary bg-orange-50 px-2 py-0.5 rounded">Senior</span>
+                                        <span class="text-[10px] text-stone-400">• 2h ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-headline text-lg font-bold mb-2">My 2024 Roadmap for Full-Stack Mastery</h3>
+                            <p class="text-stone-600 leading-relaxed text-sm">
+                                If you're looking to level up this year, focus on deep-diving into Next.js App Router
+                                and understanding distributed systems. Don't just build apps, build scalable
+                                architecture. Here's my personal checklist for senior-level proficiency...
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-50">
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center bg-stone-100 rounded-full">
+                                    <button class="p-2 hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-lg">arrow_upward</span>
+                                    </button>
+                                    <span class="text-xs font-bold text-stone-700 px-1">1.2k</span>
+                                    <button class="p-2 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">arrow_downward</span>
+                                    </button>
+                                </div>
+                                <button
+                                    class="flex items-center gap-1.5 text-stone-500 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                                    <span class="text-xs font-bold">42</span>
+                                </button>
+                            </div>
+                            <button class="text-stone-400 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">share</span>
+                            </button>
+                        </div>
+                    </article>
+                    <!-- Post Card 2 -->
+                    <article
+                        class="bg-surface-container-lowest rounded-2xl p-6 border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <img class="w-10 h-10 rounded-full object-cover ring-2 ring-white"
+                                    data-alt="creative tech professional woman with short dyed hair smiling in a minimalist studio environment"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2dmEr2Wwy2yIJdxDzTdHBjir9Slg4wBcvAPuH6gWFIgHXk7uephjCNRFRXH61XlLU3qv4VXF7Q57phn8EKtfwYFvZJnbzOgW_wg0p51ziShAbij7B8xeSpa8zuE22W6EtiblmyHn3FTJYTsg-4gZ99IMPxQo-JkhyL8E1VFjkUT-5dziMROyOh9UWOmiI8Ua9g_zuGBty1HWgKk02vffw_EXDsAFyPomVJjkC-NkEBPz83Qv1UAWBzMaE6ozvS5qQSNIrom1Pt3g" />
+                                <div>
+                                    <h4 class="font-bold text-sm text-stone-900 leading-none">Sarah Jenkins</h4>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span
+                                            class="text-[10px] font-bold uppercase tracking-widest text-primary bg-orange-50 px-2 py-0.5 rounded">Senior</span>
+                                        <span class="text-[10px] text-stone-400">• 5h ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-headline text-lg font-bold mb-2">The Hidden Cost of Tech Debt</h3>
+                            <p class="text-stone-600 leading-relaxed text-sm">
+                                As someone who has spent the last decade in startup environments, the biggest mistake I
+                                see is ignoring small architecture smells. They compound faster than credit card
+                                interest. Let's talk about the 'Fix it Friday' culture.
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-stone-50">
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center bg-stone-100 rounded-full">
+                                    <button class="p-2 hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined text-lg">arrow_upward</span>
+                                    </button>
+                                    <span class="text-xs font-bold text-stone-700 px-1">856</span>
+                                    <button class="p-2 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">arrow_downward</span>
+                                    </button>
+                                </div>
+                                <button
+                                    class="flex items-center gap-1.5 text-stone-500 hover:text-primary transition-colors">
+                                    <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                                    <span class="text-xs font-bold">18</span>
+                                </button>
+                            </div>
+                            <button class="text-stone-400 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-lg">share</span>
+                            </button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+        <!-- Right Pane: Online Peers (25%) -->
+        <section class="w-1/4 bg-stone-50/50 flex flex-col">
+            <div class="p-6">
+                <h2 class="font-headline text-lg font-bold text-on-surface tracking-tight mb-6">Online Peers</h2>
+                <div class="space-y-4">
+                    <!-- User 1 -->
+                    <div class="flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="close up headshot of a young male student in a library setting with warm lighting"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSHV2mLFG5iX3O--Cma_UsGfrnSkZ8lMqCy0olsTKR9AQk20Q3vc-oQi0DgFjVS1p5kFZk6X-2gdLd1l2TRgWeH6966c-GEaWsqAcnFJ5kQ7oXMxI1Gx98tJz2-mRj6PfQ_TTpJNYuFkwNIaevAXPNKphiVGjr5RsLwnZikLyaaDY2ZJSSSQvDt1dSUfTR0ljGUHs8EfDFc8_n1WCzPGEU3Atz7AmPZ7nDSaTxHRx0sYZR_0BFVVVLjZq1KzdS3IsDVLMvn310-kY" />
+                                <span
+                                    class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-stone-50 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-stone-900 group-hover:text-primary transition-colors">
+                                    Marcus Chen</h5>
+                                <p class="text-[10px] text-stone-400 uppercase font-semibold">Studying React</p>
+                            </div>
+                        </div>
+                        <button
+                            class="p-2 text-primary hover:bg-orange-50 rounded-full transition-all opacity-0 group-hover:opacity-100">
+                            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                        </button>
+                    </div>
+                    <!-- User 2 -->
+                    <div class="flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="headshot of a woman with braided hair and glasses smiling warmly in a bright workspace"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz9sUH7RHNY-z7byW4JgsuFNB8jtVIw6Xxew5axm3YnOHieR5ouf_gXW2ujr4OY3xPQUJhHIik9g-vFbahQkX4ePJklJ4YtEibaE_iO6RT4p5riZFQLjY52p0SuefUQIqs6alRJMF2bzintzO3wXUM22FoKfg2mqT1KDwcN7bKhZFuKHdRblgXH6WvaK9XBt_hIvhfG3DYxIizVv2xbs5aZUUl6eFgxbWZVFbk3phNQBI39H13bbDuRChxuriTL0B091AnqdIDyr8" />
+                                <span
+                                    class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-stone-50 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-stone-900 group-hover:text-primary transition-colors">
+                                    Elena Rodriguez</h5>
+                                <p class="text-[10px] text-stone-400 uppercase font-semibold">Active in UI/UX</p>
+                            </div>
+                        </div>
+                        <button
+                            class="p-2 text-primary hover:bg-orange-50 rounded-full transition-all opacity-0 group-hover:opacity-100">
+                            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                        </button>
+                    </div>
+                    <!-- User 3 -->
+                    <div class="flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="professional male portrait with stubble and a serious look in a clean modern architectural setting"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9lXEhX1-pna-IMqnNVgdZpHtSUGXDSw9eLwuzfOlYBW9wOENsp9t4QCHLRKOvHyPdSB0BxLwbkmp_lc5tgevk2QWrN01vXXEUk1y-wmgrgCf4j7VVQzIlaunKNyC1PrbDjjkHgnOTZvJKLBbva75JSiHe86xbmDbI6PfcxUrDyiHBksoYjC1hWbYWnR1sefhUhzNsepDyn87bIPMUO7SlDBaW7PFh-rPNKhmWjsKOqrJ4-j8wTuNZFfp9ng7PdqnnZPDofiCECU8" />
+                                <span
+                                    class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-stone-50 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-stone-900 group-hover:text-primary transition-colors">
+                                    Tom Hardway</h5>
+                                <p class="text-[10px] text-stone-400 uppercase font-semibold">Coding Python</p>
+                            </div>
+                        </div>
+                        <button
+                            class="p-2 text-primary hover:bg-orange-50 rounded-full transition-all opacity-0 group-hover:opacity-100">
+                            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                        </button>
+                    </div>
+                    <!-- User 4 -->
+                    <div class="flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                    data-alt="young woman with natural curly hair looking at camera in a softly lit artistic studio"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWjCYq105fHX1yVcVK5JJcw1A4wHcX-GATajP1WHagcTQa2NmiOBw6KJUv1GatYgmCTo0E9kWk1HwAZEUqzA7kqABzCMXc-w-xk1rGMdJQXpNq8s1z6gFMFelGJGoGhtC12DEJx95-tYWScSI0RY9-bjkt9VJqZxw8WEQ-P3vNvczf7Iu9qT4gnl82caTjM7myEW6IWY7txyRFDPeI1rrYZBxRWhvVbI8tjN2NHjv26sfX1YTgw74-s--9ZrQyK8lYeE6xBn4h5-o" />
+                                <span
+                                    class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-stone-50 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h5 class="text-sm font-bold text-stone-900 group-hover:text-primary transition-colors">
+                                    Lila Vane</h5>
+                                <p class="text-[10px] text-stone-400 uppercase font-semibold">Open to help</p>
+                            </div>
+                        </div>
+                        <button
+                            class="p-2 text-primary hover:bg-orange-50 rounded-full transition-all opacity-0 group-hover:opacity-100">
+                            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-12 bg-stone-100 p-4 rounded-2xl">
+                    <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Recommended for you
+                    </p>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold">
+                            GD
+                        </div>
+                        <div>
+                            <h6 class="text-xs font-bold">Graphic Design Hub</h6>
+                            <p class="text-[9px] text-stone-500">Based on your UI/UX interest</p>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full py-2 bg-white text-primary text-[10px] font-bold uppercase tracking-wider rounded-lg border border-stone-200 hover:border-primary transition-colors">
+                        Join Community
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- FAB for Center Content -->
+    <button
+        class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[60]">
+        <span class="material-symbols-outlined text-2xl">create</span>
+    </button>
+</body>
+
+</html>

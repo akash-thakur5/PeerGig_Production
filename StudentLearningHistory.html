@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Learning History | PeerGig</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#623200",
+                        "surface-container-high": "#eae7eb",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "inverse-primary": "#ffb77d",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#00658f",
+                        "on-primary-fixed": "#2f1500",
+                        "on-tertiary-fixed": "#001e2e",
+                        "secondary": "#5f5e61",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "surface-container-low": "#f6f2f7",
+                        "surface-container": "#f0edf1",
+                        "on-tertiary-container": "#004360",
+                        "primary-fixed": "#ffdcc3",
+                        "outline-variant": "#ddc1ae",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "tertiary-fixed": "#c7e7ff",
+                        "secondary-container": "#e4e1e6",
+                        "surface-dim": "#dcd9dd",
+                        "inverse-on-surface": "#f3f0f4",
+                        "primary": "#904d00",
+                        "background": "#fbf8fc",
+                        "on-secondary-container": "#656467",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#904d00",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "surface-bright": "#fbf8fc",
+                        "outline": "#897362",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1b1b1e",
+                        "surface": "#fbf8fc",
+                        "surface-variant": "#e4e1e6",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "inverse-surface": "#303033",
+                        "secondary-fixed": "#e4e1e6",
+                        "on-background": "#1b1b1e",
+                        "on-surface-variant": "#564334",
+                        "tertiary-container": "#00b5fc",
+                        "primary-container": "#ff8c00",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e1e6",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf8fc;
+            color: #1b1b1e;
+        }
+
+        .font-manrope {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .tonal-stacking {
+            box-shadow: 0 4px 20px -2px rgba(27, 27, 30, 0.04);
+        }
+    </style>
+</head>
+
+<body class="bg-surface">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-sm flex justify-between items-center px-8 h-16 w-full">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-bold tracking-tight text-zinc-900 font-manrope">PeerGig</span>
+            <div class="hidden md:flex items-center bg-zinc-100 dark:bg-zinc-800/50 rounded-full px-4 py-1.5 gap-2">
+                <span class="material-symbols-outlined text-zinc-400 text-sm">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-sm w-64 font-manrope"
+                    placeholder="Search skills..." type="text" />
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="flex gap-4">
+                <span
+                    class="material-symbols-outlined text-zinc-600 cursor-pointer hover:text-orange-600 transition-colors">notifications</span>
+                <span
+                    class="material-symbols-outlined text-zinc-600 cursor-pointer hover:text-orange-600 transition-colors">mail</span>
+            </div>
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-zinc-200">
+                <img alt="User profile" class="w-full h-full object-cover"
+                    data-alt="close-up portrait of a young professional man with a kind smile in a clean studio setting"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi4zLaeYGPz-FWh3R49eI8eiM50IokyEEbou1IU-XmyvALgc9wg2m_dKq4QKxt8isARdtY5LfrwDXUw8IBqtJKs-s-UMqcYfFrjiTsnRIndHxK5bOtDjTCA-GzTLSQRh2xIrchip2w-eEANUEGtPD-2jxyMbbukLvJr6ifKZ6Bp4AfrDUOi248MOw_YbmuIqumCBjXjeKXVLzqy8zZgnVKKfsX_Zbbr0y7fp66-A_QunxxCKHI6ZCI7zcRYC-u8_HvymZOU9bwe94" />
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+    <aside class="fixed left-0 h-screen w-64 pt-20 bg-zinc-50 flex flex-col gap-2 p-4">
+        <div class="px-4 py-6 mb-2">
+            <h2 class="text-lg font-black text-orange-600 font-manrope">The Atelier</h2>
+            <p class="text-xs text-zinc-500 font-medium tracking-wide">Academic Marketplace</p>
+        </div>
+        <nav class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">school</span>
+                <span>Become Tutor</span>
+            </a>
+            <a class="flex items-center gap-3 text-orange-600 bg-white rounded-lg shadow-sm px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">person_add</span>
+                <span>Become Student</span>
+            </a>
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">swap_horiz</span>
+                <span>Skillswap</span>
+            </a>
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">group</span>
+                <span>Peer Connect</span>
+            </a>
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span>Wallet</span>
+            </a>
+            <a class="flex items-center gap-3 text-zinc-500 hover:bg-zinc-100 rounded-lg px-4 py-3 ml-2 transition-all duration-300 hover:translate-x-1 font-manrope text-sm font-semibold"
+                href="#">
+                <span class="material-symbols-outlined">description</span>
+                <span>Notes</span>
+            </a>
+        </nav>
+        <div class="mt-auto p-4">
+            <button
+                class="w-full py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl font-manrope font-bold text-sm shadow-md hover:-translate-y-0.5 transition-all">
+                New Request
+            </button>
+        </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="ml-64 mt-16 p-8 min-h-screen bg-surface-container-low">
+        <!-- Header Section -->
+        <div class="max-w-6xl mx-auto mb-10">
+            <a class="inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors text-sm font-medium mb-6 group"
+                href="#">
+                <span
+                    class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                Back to Student Dashboard
+            </a>
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface font-manrope mb-2">Learning
+                        History</h1>
+                    <p class="text-secondary text-lg max-w-2xl font-body">Track your educational journey, review past
+                        interactions, and access lesson notes from your peer tutors.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Stats Row -->
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Card 1 -->
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-primary">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">menu_book</span>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-secondary font-bold font-label">Total Sessions
+                            Booked</p>
+                        <h3 class="text-3xl font-extrabold text-on-surface font-manrope">15</h3>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-emerald-600">check_circle</span>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-secondary font-bold font-label">Sessions
+                            Attended</p>
+                        <h3 class="text-3xl font-extrabold text-on-surface font-manrope">12</h3>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-l-4 border-orange-400">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-500">calendar_clock</span>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-secondary font-bold font-label">Upcoming
+                            Sessions</p>
+                        <h3 class="text-3xl font-extrabold text-on-surface font-manrope">3</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- History List Section -->
+        <section class="max-w-6xl mx-auto">
+            <!-- Toolbar -->
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                <div class="relative w-full md:w-96">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary">search</span>
+                    <input
+                        class="w-full bg-white border-none rounded-xl py-3 pl-10 pr-4 shadow-sm focus:ring-2 focus:ring-primary/20 font-manrope text-sm"
+                        placeholder="Search past sessions..." type="text" />
+                </div>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <span class="text-sm font-semibold text-secondary whitespace-nowrap">Filter by:</span>
+                    <select
+                        class="bg-white border-none rounded-xl py-3 px-4 shadow-sm focus:ring-2 focus:ring-primary/20 font-manrope text-sm w-full md:w-48 cursor-pointer">
+                        <option>Status: All</option>
+                        <option>Completed</option>
+                        <option>Upcoming</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+            </div>
+            <!-- List Container -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <div class="divide-y divide-surface-container">
+                    <!-- Row Item 1 -->
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-between p-6 hover:bg-zinc-50 transition-colors group">
+                        <div class="flex items-center gap-6 w-full md:w-1/3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 font-bold font-manrope">
+                                01
+                            </div>
+                            <div>
+                                <h4
+                                    class="text-lg font-bold text-on-surface font-manrope group-hover:text-primary transition-colors">
+                                    Mastering React Hooks</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="w-5 h-5 rounded-full overflow-hidden">
+                                        <img alt="Tutor avatar" class="w-full h-full object-cover"
+                                            data-alt="professional headshot of a smiling young male tutor with glasses in a minimalist office environment"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsOSgEBH8bVB67sJap2J9xJEzLta_KtM8yEmr2dVEI_FOZsUlNnjgKec2fJhbGI0X0eK-MuhxI1-um-ExCAozEAUyaYsumP8d93_mc-og8sFcKEwmt7dy9Yz3XKIFOPXVhdLigJkOVl4cr2KdyjQLRaTYsqiaiTMAgY1zbKR6-G9VzW-ym9eFb4G4qJr5o9TQLRyUoB8H1NTshWZc366wXSNzbkPPhUze7RelTtMnF_jFfrXB3lRLLxdZnEvyAWdouGxsAkxYzADk" />
+                                    </div>
+                                    <span class="text-sm text-secondary font-medium">Taught by Alex Rivera</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col md:flex-row items-center gap-4 md:gap-12 w-full md:w-1/3 justify-center py-4 md:py-0">
+                            <div class="flex items-center gap-2 text-secondary">
+                                <span class="material-symbols-outlined text-xl">calendar_today</span>
+                                <span class="text-sm font-medium">April 2, 2026</span>
+                            </div>
+                            <span
+                                class="px-4 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider font-label">Completed</span>
+                        </div>
+                        <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-1/3">
+                            <span class="text-xl font-bold text-primary font-manrope">$5.00</span>
+                            <div class="flex items-center gap-4">
+                                <button
+                                    class="flex items-center gap-1 py-2 px-4 border border-zinc-200 rounded-lg text-secondary hover:text-primary hover:border-primary transition-all text-sm font-bold font-manrope">
+                                    <span class="material-symbols-outlined text-lg">star</span>
+                                    Leave Review
+                                </button>
+                                <button
+                                    class="text-sm font-bold text-primary hover:underline underline-offset-4 decoration-2">View
+                                    Notes</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row Item 2 -->
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-between p-6 hover:bg-zinc-50 transition-colors group">
+                        <div class="flex items-center gap-6 w-full md:w-1/3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 font-bold font-manrope">
+                                02
+                            </div>
+                            <div>
+                                <h4
+                                    class="text-lg font-bold text-on-surface font-manrope group-hover:text-primary transition-colors">
+                                    Advanced Microeconomics</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="w-5 h-5 rounded-full overflow-hidden">
+                                        <img alt="Tutor avatar" class="w-full h-full object-cover"
+                                            data-alt="portrait of a focused professional woman tutor in business casual attire with a soft-focus library background"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh5wTYQE14ilSmV0RLO76YPERExstsyj0wNBjs5HNDva4OiYPSmApivyFHkpzXxc2gyVGgIJfdXWdGuS4UOwar-nN2ec34daT9pF6fPw7m01csM7pZLbBgZSt9lblkDnI9DcOYuU39Ig198yXrnfCodhKTMvj1rPP-OW-77cUNUBzHHZb2S6GLVJLzPmip31NqId_owYsJ2iLtv_LVqukGhqkGYNx-wDFLE_k5UP9AwcB0vluaf5A18laTTokBI3o6_85U_s_e5Xs" />
+                                    </div>
+                                    <span class="text-sm text-secondary font-medium">Taught by Sarah Chen</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col md:flex-row items-center gap-4 md:gap-12 w-full md:w-1/3 justify-center py-4 md:py-0">
+                            <div class="flex items-center gap-2 text-secondary">
+                                <span class="material-symbols-outlined text-xl">calendar_today</span>
+                                <span class="text-sm font-medium">May 15, 2026</span>
+                            </div>
+                            <span
+                                class="px-4 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider font-label">Upcoming</span>
+                        </div>
+                        <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-1/3">
+                            <span class="text-xl font-bold text-primary font-manrope">$8.50</span>
+                            <div class="flex items-center gap-4">
+                                <button
+                                    class="flex items-center gap-1 py-2 px-4 border border-zinc-200 rounded-lg text-zinc-300 cursor-not-allowed text-sm font-bold font-manrope">
+                                    <span class="material-symbols-outlined text-lg">star</span>
+                                    Leave Review
+                                </button>
+                                <button class="text-sm font-bold text-zinc-300 cursor-not-allowed">View Notes</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row Item 3 -->
+                    <div
+                        class="flex flex-col md:flex-row items-center justify-between p-6 hover:bg-zinc-50 transition-colors group">
+                        <div class="flex items-center gap-6 w-full md:w-1/3">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400 font-bold font-manrope">
+                                03
+                            </div>
+                            <div>
+                                <h4
+                                    class="text-lg font-bold text-on-surface font-manrope group-hover:text-primary transition-colors">
+                                    Digital Branding 101</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="w-5 h-5 rounded-full overflow-hidden">
+                                        <img alt="Tutor avatar" class="w-full h-full object-cover"
+                                            data-alt="creative male professional smiling warmly in a vibrant modern workspace with art supplies in background"
+                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiapcS2H7nN8UwrwBq2z2QDKUfsOBrcwIxfwcIlj3ZYYSq8oCPt9w4dMNSsyId9xsHQVm5zohP7NNl8F-KMmxZao8bO2z3vzj_OmtEMd2jM5L0Jl_aZFOPLkQluTTWFZL_8eS2kngWLtPoiXtKdYUQhwbxznGfobpxekuBDqu8COcyT1gus6i2_0OVGwoYj7arJ2qEQ8OE9EewJ2N7gBmCAkIbvKh7aV1CyWRohm1YuAuLCqBFdd39OjaTM1FdnvBVAuGTqWU3l4k" />
+                                    </div>
+                                    <span class="text-sm text-secondary font-medium">Taught by Marcus King</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="flex flex-col md:flex-row items-center gap-4 md:gap-12 w-full md:w-1/3 justify-center py-4 md:py-0">
+                            <div class="flex items-center gap-2 text-secondary">
+                                <span class="material-symbols-outlined text-xl">calendar_today</span>
+                                <span class="text-sm font-medium">March 12, 2026</span>
+                            </div>
+                            <span
+                                class="px-4 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider font-label">Completed</span>
+                        </div>
+                        <div class="flex items-center justify-between md:justify-end gap-6 w-full md:w-1/3">
+                            <span class="text-xl font-bold text-primary font-manrope">$5.00</span>
+                            <div class="flex items-center gap-4">
+                                <button
+                                    class="flex items-center gap-1 py-2 px-4 border border-zinc-200 rounded-lg text-secondary hover:text-primary hover:border-primary transition-all text-sm font-bold font-manrope">
+                                    <span class="material-symbols-outlined text-lg"
+                                        style="font-variation-settings: 'FILL' 1;">star</span>
+                                    Review Left
+                                </button>
+                                <button
+                                    class="text-sm font-bold text-primary hover:underline underline-offset-4 decoration-2">View
+                                    Notes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination or Load More -->
+            <div class="mt-8 flex justify-center">
+                <button
+                    class="flex items-center gap-2 px-8 py-3 bg-white border border-zinc-200 rounded-full text-secondary font-bold font-manrope hover:bg-zinc-50 transition-colors shadow-sm">
+                    Load Older Sessions
+                    <span class="material-symbols-outlined">expand_more</span>
+                </button>
+            </div>
+        </section>
+    </main>
+    <!-- FAB Suppression (Per Instructions) - None Rendered -->
+</body>
+
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Notes &amp; Study Hub | PeerGig</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary": "#ffffff",
+                        "inverse-primary": "#ffb77d",
+                        "tertiary-fixed": "#c7e7ff",
+                        "on-background": "#1b1b1e",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#ddc1ae",
+                        "surface-container": "#f0edf1",
+                        "on-tertiary-container": "#004360",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-primary-container": "#623200",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#00658f",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "inverse-surface": "#303033",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "surface-tint": "#904d00",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#ff8c00",
+                        "primary": "#904d00",
+                        "on-surface": "#1b1b1e",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#dcd9dd",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f6f2f7",
+                        "on-secondary-container": "#656467",
+                        "surface-container-high": "#eae7eb",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "background": "#fbf8fc",
+                        "on-surface-variant": "#564334",
+                        "surface-variant": "#e4e1e6",
+                        "secondary": "#5f5e61",
+                        "on-primary-fixed": "#2f1500",
+                        "secondary-fixed": "#e4e1e6",
+                        "primary-fixed": "#ffdcc3",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#00b5fc",
+                        "inverse-on-surface": "#f3f0f4",
+                        "secondary-container": "#e4e1e6",
+                        "surface-container-highest": "#e4e1e6",
+                        "surface-bright": "#fbf8fc",
+                        "surface": "#fbf8fc",
+                        "primary-fixed-dim": "#ffb77d",
+                        "on-tertiary-fixed": "#001e2e",
+                        "outline": "#897362",
+                        "on-tertiary-fixed-variant": "#004c6c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fbf8fc;
+            color: #1b1b1e;
+        }
+
+        .headline {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .tonal-shift {
+            background-color: #f6f2f7;
+        }
+
+        .no-border {
+            border: none !important;
+        }
+    </style>
+</head>
+
+<body class="bg-background min-h-screen">
+    <!-- TopNavBar -->
+    <header
+        class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none flex justify-between items-center px-8 h-16 w-full">
+        <div class="flex items-center gap-8">
+            <span class="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white headline">PeerGig</span>
+            <div
+                class="hidden md:flex items-center bg-neutral-100/50 dark:bg-neutral-800/50 px-4 py-2 rounded-full w-96">
+                <span class="material-symbols-outlined text-neutral-500 mr-2">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-sm w-full outline-none"
+                    placeholder="Search resources..." type="text" />
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="p-2 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors rounded-full relative">
+                <span class="material-symbols-outlined text-neutral-500" data-icon="notifications">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-primary-container rounded-full"></span>
+            </button>
+            <button class="p-2 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors rounded-full">
+                <span class="material-symbols-outlined text-neutral-500" data-icon="chat">chat</span>
+            </button>
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-neutral-200">
+                <img alt="User Profile" class="w-full h-full object-cover"
+                    data-alt="Close up portrait of a young professional man with a friendly smile, soft natural office lighting, blurred modern interior"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHdq3Y387EfllohQhvbCC0Z7FPbSTp5AP84WY0kvYVKCPL7am2w238GxrBvNGq1M2_xarxQcO0y3iWJrQaDe0gq1y7YksM_hDrlb9c2R9mDhq3JMqCLl0aGAtayM88SW1dQ5VLctKnEwFCA_2msyo-6wdnysJH7grCGq1UqKxg-hwIukbU7JsktZwFfUDiX68QpGosenEHxbHFFL5QGlLqhjO_OPFL30BeuAoPSWD_BlYQrMt-LxZbcm0F2TKRUWXpmb5MlSKbNiU" />
+            </div>
+        </div>
+    </header>
+    <!-- SideNavBar -->
+    <nav
+        class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-neutral-50 dark:bg-neutral-950 flex flex-col py-6 gap-2 no-border tonal-shift">
+        <div class="px-6 mb-8 flex items-center gap-3">
+            <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">P</div>
+            <div>
+                <p class="text-sm font-bold text-neutral-900">The Atelier</p>
+                <p class="text-[10px] text-neutral-500 uppercase tracking-widest">Marketplace</p>
+            </div>
+        </div>
+        <div class="space-y-1">
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                <span class="text-sm font-medium tracking-wide">Dashboard</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="school">school</span>
+                <span class="text-sm font-medium tracking-wide">Become Tutor</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="person_add">person_add</span>
+                <span class="text-sm font-medium tracking-wide">Become Student</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="swap_horiz">swap_horiz</span>
+                <span class="text-sm font-medium tracking-wide">Skillswap</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="group">group</span>
+                <span class="text-sm font-medium tracking-wide">Peer Connect</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-neutral-500 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-900 hover:text-orange-500 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3"
+                    data-icon="account_balance_wallet">account_balance_wallet</span>
+                <span class="text-sm font-medium tracking-wide">Wallet</span>
+            </a>
+            <a class="flex items-center px-6 py-3 text-orange-600 font-bold border-r-4 border-orange-600 bg-white dark:bg-neutral-900 transition-all duration-300 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined mr-3" data-icon="description">description</span>
+                <span class="text-sm font-medium tracking-wide">Notes</span>
+            </a>
+        </div>
+    </nav>
+    <!-- Main Content Area -->
+    <main class="ml-64 mt-16 p-12 max-w-7xl mx-auto min-h-screen">
+        <!-- Header Section -->
+        <header class="mb-12">
+            <h1 class="text-5xl headline font-extrabold text-on-background mb-4 tracking-tight">Study Hub</h1>
+            <p class="text-lg text-secondary max-w-2xl font-body leading-relaxed">
+                Organize your learning materials, create notebooks, and generate study aids.
+            </p>
+        </header>
+        <!-- Tab Navigation -->
+        <div class="flex items-center gap-10 mb-8">
+            <button class="pb-4 text-orange-600 font-bold border-b-2 border-orange-600 tracking-wide text-sm headline">
+                Acquired Materials
+            </button>
+            <button
+                class="pb-4 text-neutral-500 font-medium hover:text-neutral-900 transition-colors tracking-wide text-sm headline">
+                Personal Notebooks
+            </button>
+        </div>
+        <!-- Search & Filter Bar -->
+        <div class="flex flex-wrap items-center gap-4 mb-10 bg-[#F9FAFB] p-4 rounded-xl">
+            <div class="flex-1 min-w-[300px] relative">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">search</span>
+                <input
+                    class="w-full pl-10 pr-4 py-2.5 bg-white border-neutral-200 rounded-lg focus:ring-primary focus:border-primary text-sm"
+                    placeholder="Search by title, tutor or tag..." type="text" />
+            </div>
+            <button
+                class="px-5 py-2.5 bg-white border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 flex items-center gap-2 hover:bg-neutral-50 transition-colors">
+                <span class="material-symbols-outlined text-lg">filter_list</span>
+                Filter by Subject
+            </button>
+            <button
+                class="px-5 py-2.5 bg-white border border-neutral-200 rounded-lg text-sm font-medium text-neutral-700 flex items-center gap-2 hover:bg-neutral-50 transition-colors">
+                <span class="material-symbols-outlined text-lg">sort</span>
+                Sort by Date
+            </button>
+        </div>
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <div
+                class="bg-white rounded-xl border border-neutral-200 shadow-sm p-6 flex flex-col hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-orange-50 rounded-xl">
+                        <span class="material-symbols-outlined text-orange-600 text-3xl"
+                            data-icon="description">description</span>
+                    </div>
+                    <button class="text-neutral-400 hover:text-neutral-900">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+                <h3 class="text-lg font-bold headline mb-4 text-neutral-900">Advanced Thermodynamics Formulas</h3>
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Tutor:
+                        Alex M.</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Subject:
+                        Physics</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Date:
+                        Oct 12</span>
+                </div>
+                <div class="mt-auto space-y-3">
+                    <div class="flex gap-2">
+                        <button
+                            class="flex-1 py-2 bg-white border border-neutral-200 rounded-lg text-xs font-bold text-neutral-700 hover:bg-neutral-50 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">download</span>
+                            Download
+                        </button>
+                        <button class="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 text-neutral-600">
+                            <span class="material-symbols-outlined text-base" data-icon="share">share</span>
+                        </button>
+                    </div>
+                    <button
+                        class="w-full py-2.5 border border-orange-200 text-orange-600 font-bold rounded-lg text-xs hover:bg-orange-50 transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-base">auto_awesome</span>
+                        Turn into Flashcards
+                    </button>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div
+                class="bg-white rounded-xl border border-neutral-200 shadow-sm p-6 flex flex-col hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-orange-50 rounded-xl">
+                        <span class="material-symbols-outlined text-orange-600 text-3xl"
+                            data-icon="description">description</span>
+                    </div>
+                    <button class="text-neutral-400 hover:text-neutral-900">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+                <h3 class="text-lg font-bold headline mb-4 text-neutral-900">React Hooks Masterclass</h3>
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Tutor:
+                        Sarah K.</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Subject:
+                        Computer Science</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Date:
+                        Oct 09</span>
+                </div>
+                <div class="mt-auto space-y-3">
+                    <div class="flex gap-2">
+                        <button
+                            class="flex-1 py-2 bg-white border border-neutral-200 rounded-lg text-xs font-bold text-neutral-700 hover:bg-neutral-50 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">download</span>
+                            Download
+                        </button>
+                        <button class="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 text-neutral-600">
+                            <span class="material-symbols-outlined text-base" data-icon="share">share</span>
+                        </button>
+                    </div>
+                    <button
+                        class="w-full py-2.5 border border-orange-200 text-orange-600 font-bold rounded-lg text-xs hover:bg-orange-50 transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-base">auto_awesome</span>
+                        Turn into Flashcards
+                    </button>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div
+                class="bg-white rounded-xl border border-neutral-200 shadow-sm p-6 flex flex-col hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-orange-50 rounded-xl">
+                        <span class="material-symbols-outlined text-orange-600 text-3xl"
+                            data-icon="description">description</span>
+                    </div>
+                    <button class="text-neutral-400 hover:text-neutral-900">
+                        <span class="material-symbols-outlined">more_horiz</span>
+                    </button>
+                </div>
+                <h3 class="text-lg font-bold headline mb-4 text-neutral-900">Macroeconomics 101: Summary</h3>
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Tutor:
+                        James P.</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Subject:
+                        Economics</span>
+                    <span
+                        class="px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full text-[11px] font-semibold uppercase tracking-wider">Date:
+                        Sep 28</span>
+                </div>
+                <div class="mt-auto space-y-3">
+                    <div class="flex gap-2">
+                        <button
+                            class="flex-1 py-2 bg-white border border-neutral-200 rounded-lg text-xs font-bold text-neutral-700 hover:bg-neutral-50 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">download</span>
+                            Download
+                        </button>
+                        <button class="p-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 text-neutral-600">
+                            <span class="material-symbols-outlined text-base" data-icon="share">share</span>
+                        </button>
+                    </div>
+                    <button
+                        class="w-full py-2.5 border border-orange-200 text-orange-600 font-bold rounded-lg text-xs hover:bg-orange-50 transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-base">auto_awesome</span>
+                        Turn into Flashcards
+                    </button>
+                </div>
+            </div>
+            <!-- Empty State / Create New Card -->
+            <button
+                class="group relative bg-neutral-50 border-2 border-dashed border-neutral-300 rounded-xl p-8 flex flex-col items-center justify-center gap-4 hover:border-orange-400 hover:bg-orange-50/30 transition-all">
+                <div
+                    class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-orange-600 text-3xl">add</span>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold headline text-neutral-900">Create New Personal Notebook</p>
+                    <p class="text-sm text-neutral-500 mt-1">Start drafting your own study guide</p>
+                </div>
+            </button>
+        </div>
+        <!-- Secondary Section: Activity Feed / Tips -->
+        <section class="mt-16 bg-white rounded-2xl p-8 border border-neutral-100">
+            <h2 class="text-2xl headline font-bold mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-orange-600">tips_and_updates</span>
+                Study Tips for You
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex gap-4">
+                    <div
+                        class="flex-shrink-0 w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">auto_fix_high</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-neutral-900 mb-1">AI-Powered Flashcards</h4>
+                        <p class="text-sm text-secondary leading-relaxed">Our system can now automatically generate
+                            active recall questions from your uploaded PDF notes.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div
+                        class="flex-shrink-0 w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">group</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-neutral-900 mb-1">Collaborative Study</h4>
+                        <p class="text-sm text-secondary leading-relaxed">Join the Peer Connect tab to find students who
+                            are currently studying the same materials as you.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PeerGig - The Student-Only Micro-Learning Marketplace</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#001e2e",
+                        "on-secondary-fixed-variant": "#47464a",
+                        "secondary-fixed-dim": "#c8c5ca",
+                        "tertiary-fixed-dim": "#85cfff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#004360",
+                        "on-secondary-fixed": "#1b1b1e",
+                        "on-surface": "#1b1b1e",
+                        "surface-tint": "#904d00",
+                        "secondary": "#5f5e61",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#6e3900",
+                        "on-primary-fixed": "#2f1500",
+                        "tertiary-container": "#00b5fc",
+                        "surface-variant": "#e4e1e6",
+                        "error": "#ba1a1a",
+                        "primary-container": "#ff8c00",
+                        "on-secondary-container": "#656467",
+                        "surface-container-low": "#f6f2f7",
+                        "tertiary": "#00658f",
+                        "secondary-fixed": "#e4e1e6",
+                        "primary-fixed-dim": "#ffb77d",
+                        "surface-container-highest": "#e4e1e6",
+                        "inverse-primary": "#ffb77d",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#ffdcc3",
+                        "surface": "#fbf8fc",
+                        "on-surface-variant": "#564334",
+                        "tertiary-fixed": "#c7e7ff",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#ddc1ae",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#004c6c",
+                        "surface-bright": "#fbf8fc",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#eae7eb",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fbf8fc",
+                        "on-primary-container": "#623200",
+                        "outline": "#897362",
+                        "surface-dim": "#dcd9dd",
+                        "inverse-surface": "#303033",
+                        "inverse-on-surface": "#f3f0f4",
+                        "on-background": "#1b1b1e",
+                        "secondary-container": "#e4e1e6",
+                        "surface-container": "#f0edf1",
+                        "primary": "#904d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #fbf8fc; color: #1b1b1e; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .gradient-cta { background: linear-gradient(135deg, #904d00 0%, #ff8c00 100%); }
+        .tonal-stack-1 { background-color: #f6f2f7; }
+        .tonal-stack-2 { background-color: #ffffff; }
+    </style>
+</head>
+<body class="bg-background text-on-surface overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#fbf8fc]/80 backdrop-blur-md shadow-sm">
+<div class="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
+<div class="text-2xl font-black text-[#1b1b1e] tracking-tighter font-headline">
+                PeerGig
+            </div>
+<div class="hidden md:flex items-center space-x-8 font-headline font-semibold tracking-tight">
+<a class="text-[#5f5e61] hover:text-[#1b1b1e] transition-colors" href="#">Marketplace</a>
+<a class="text-[#5f5e61] hover:text-[#1b1b1e] transition-colors" href="#">How it Works</a>
+<a class="text-[#5f5e61] hover:text-[#1b1b1e] transition-colors" href="#">Benefits</a>
+</div>
+<div class="flex items-center space-x-6">
+<button class="text-[#5f5e61] font-semibold hover:text-[#1b1b1e] transition-colors">Log In</button>
+<button class="gradient-cta text-white px-6 py-2.5 rounded-xl font-bold transition-all duration-200 hover:opacity-90 active:scale-95">
+                    Register
+                </button>
+</div>
+</div>
+</nav>
+<main class="pt-24">
+<!-- Hero Section -->
+<section class="relative px-8 py-24 md:py-32 max-w-7xl mx-auto overflow-hidden">
+<div class="text-center max-w-4xl mx-auto">
+<div class="inline-block px-4 py-1.5 mb-6 bg-primary-container/10 rounded-full">
+<span class="text-primary font-bold text-xs uppercase tracking-widest font-label">The Digital Atelier</span>
+</div>
+<h1 class="font-headline text-5xl md:text-7xl font-extrabold tracking-tighter text-on-surface leading-[1.1] mb-8">
+                    The Student-Only Marketplace for <span class="text-primary">Affordable</span>, Topic-Specific Knowledge
+                </h1>
+<p class="text-lg md:text-xl text-secondary leading-relaxed mb-12 max-w-2xl mx-auto font-body">
+                    Don't Pay for a Course. Just Pay for the Topic. Connect with peers to get personalized, live help from those who just mastered what you're learning.
+                </p>
+<div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+<button class="gradient-cta text-on-primary px-10 py-5 rounded-xl text-lg font-bold flex items-center gap-2 transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
+                        Get Started
+                        <span class="material-symbols-outlined" data-icon="arrow_right_alt">arrow_right_alt</span>
+</button>
+<button class="px-10 py-5 rounded-xl text-lg font-bold text-primary border border-primary/20 hover:bg-primary/5 transition-all">
+                        View Marketplace
+                    </button>
+</div>
+</div>
+<!-- Asymmetrical Visual Element -->
+<div class="mt-20 relative w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="Modern collaborative university study space with students working on laptops and tablets in a bright airy architecturally minimal environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-pI1PlZN1z6DMEA_s2rTB8Sij3mAHXQRRSxY1iioy6i_ce0NoWuUctjsLIXcdbUYgoO0_zdQ6rQ89yFEyrL_9QnCDmJTARTwjwuNj-C21vFwoqu2n6zLvHPJQypkA37RECXqPkPwm5lyEpzCz419fXfo_PqSmSZZUdGRyw6wqX62t6sIOxFh3fEjQaGkNsTJVdkXn9KQgeK9MIzRibnQqE_HZ51p9nEWTd35Bz2SRGTWEI-DY2u5ymJQ8GNDCgqS8EwGplWQeBqQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent"></div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-8">
+<div class="mb-16">
+<h2 class="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-4">Mastering topics in three simple steps.</h2>
+<div class="h-1.5 w-24 bg-primary rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Step 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl transition-all hover:shadow-lg group">
+<div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="search">search</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-4">1. Search for a Topic</h3>
+<p class="text-secondary leading-relaxed font-body">
+                            Filter through highly specific academic topics. From "Recursive Functions" to "Neural Synapse Mapping"—find exactly what you need.
+                        </p>
+</div>
+<!-- Step 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl transition-all hover:shadow-lg group">
+<div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="calendar_today">calendar_today</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-4">2. Book a Live Session</h3>
+<p class="text-secondary leading-relaxed font-body">
+                            Schedule a 15, 30, or 60-minute session instantly. Live peer-to-peer interactions ensure your specific questions are answered.
+                        </p>
+</div>
+<!-- Step 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl transition-all hover:shadow-lg group">
+<div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-4">3. Learn &amp; Earn</h3>
+<p class="text-secondary leading-relaxed font-body">
+                            Master your curriculum while building your own profile. Once you've aced a topic, become a peer tutor and start earning.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Platform Benefits Section -->
+<section class="py-24 bg-background">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+<div class="max-w-2xl">
+<h2 class="font-headline text-4xl font-extrabold tracking-tight mb-4">Designed for the Next Generation of Academics.</h2>
+<p class="text-secondary text-lg">Decentralized, peer-verified, and built on the principles of community growth.</p>
+</div>
+<div class="flex gap-2">
+<div class="w-12 h-1 bg-surface-variant rounded-full"></div>
+<div class="w-4 h-1 bg-primary rounded-full"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+<!-- Benefit 1 -->
+<div class="relative p-10 border border-outline-variant/15 rounded-2xl hover:bg-surface-container-low transition-colors">
+<span class="absolute top-8 right-8 text-xs font-bold font-label uppercase tracking-widest text-primary/40">Market Edge</span>
+<div class="mb-6 text-primary">
+<span class="material-symbols-outlined text-4xl" data-icon="payments" data-weight="fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">Economic for Students</h4>
+<p class="text-secondary font-body leading-relaxed">
+                            Market-driven pricing means you never overpay. Access premium knowledge at a fraction of the cost of traditional private tutoring.
+                        </p>
+</div>
+<!-- Benefit 2 -->
+<div class="relative p-10 border border-outline-variant/15 rounded-2xl hover:bg-surface-container-low transition-colors">
+<span class="absolute top-8 right-8 text-xs font-bold font-label uppercase tracking-widest text-primary/40">Verified Trust</span>
+<div class="mb-6 text-primary">
+<span class="material-symbols-outlined text-4xl" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">Peer-Verified Tutors</h4>
+<p class="text-secondary font-body leading-relaxed">
+                            Every peer tutor is verified through academic credentials and student ratings, ensuring high-quality, relevant instruction.
+                        </p>
+</div>
+<!-- Benefit 3 -->
+<div class="relative p-10 border border-outline-variant/15 rounded-2xl hover:bg-surface-container-low transition-colors">
+<span class="absolute top-8 right-8 text-xs font-bold font-label uppercase tracking-widest text-primary/40">Smart Economy</span>
+<div class="mb-6 text-primary">
+<span class="material-symbols-outlined text-4xl" data-icon="wallet" data-weight="fill" style="font-variation-settings: 'FILL' 1;">wallet</span>
+</div>
+<h4 class="font-headline text-2xl font-bold mb-4">Built-in Digital Wallet</h4>
+<p class="text-secondary font-body leading-relaxed">
+                            Secure, instant payments handled natively. Withdraw your earnings or reinvest them in your own learning journey seamlessly.
+                        </p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-8 pb-24">
+<div class="max-w-7xl mx-auto rounded-3xl overflow-hidden relative">
+<div class="absolute inset-0 bg-[#1b1b1e]"></div>
+<div class="relative px-8 py-20 md:py-32 flex flex-col items-center text-center">
+<h2 class="font-headline text-4xl md:text-5xl font-bold text-white mb-6">Ready to Ace Your Next Exam?</h2>
+<p class="text-secondary-fixed-dim text-lg mb-10 max-w-xl">Join thousands of students who are already learning better, together.</p>
+<button class="gradient-cta text-on-primary px-12 py-5 rounded-xl text-xl font-bold transition-transform hover:scale-105 active:scale-95">
+                        Create Your Student Account
+                    </button>
+<p class="mt-6 text-secondary-fixed-dim text-sm font-label uppercase tracking-widest">No subscription required • Pay as you go</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 border-t border-[#f6f2f7] bg-[#fbf8fc]">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-xl font-black text-[#1b1b1e] mb-2 font-headline">PeerGig</div>
+<p class="font-['Inter'] text-sm tracking-wide text-[#5f5e61]">© 2024 PeerGig. The Digital Atelier for Academic Growth.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-['Inter'] text-sm tracking-wide">
+<a class="text-[#5f5e61] hover:text-[#904d00] transition-colors" href="#">Terms of Service</a>
+<a class="text-[#5f5e61] hover:text-[#904d00] transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#5f5e61] hover:text-[#904d00] transition-colors" href="#">Student Guarantee</a>
+<a class="text-[#5f5e61] hover:text-[#904d00] transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>
