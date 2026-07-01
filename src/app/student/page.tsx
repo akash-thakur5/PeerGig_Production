@@ -15,6 +15,7 @@ interface Gig {
   tutor_name: string;
   tutor_avatar: string;
   tutor_rating: string;
+  language?: string;
   tags?: string[];
 }
 
@@ -45,10 +46,10 @@ async function getGigs(q = '', subject = '', sort = 'newest', language = ''): Pr
 async function getMyBookings(): Promise<Booking[]> {
   try {
     const cookieStore = await cookies();
-    const session = cookieStore.get('peergig_session')?.value ?? '';
+    const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'}/api/bookings`, {
       cache: 'no-store',
-      headers: { Cookie: `peergig_session=${session}` },
+      headers: { Cookie: allCookies },
     });
     if (!res.ok) return [];
     const data = await res.json();

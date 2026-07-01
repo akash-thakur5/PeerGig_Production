@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/bookings — get bookings for current user (as teacher AND as learner)
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // Bookings where the user is the gig owner (they are teaching)
     const teachingBookings = await sql`
@@ -21,7 +21,7 @@ export async function GET() {
       FROM bookings b
       JOIN gigs    g ON g.id = b.gig_id
       JOIN users   u ON u.id = b.student_id
-      WHERE g.tutor_id = ${session.id}
+      WHERE g.tutor_id = ${parseInt(session.user.id!)}
       ORDER BY b.scheduled_at ASC NULLS LAST, b.created_at DESC
     `;
 
@@ -38,7 +38,7 @@ export async function GET() {
       FROM bookings b
       JOIN gigs    g ON g.id = b.gig_id
       JOIN users   u ON u.id = g.tutor_id
-      WHERE b.student_id = ${session.id}
+      WHERE b.student_id = ${parseInt(session.user.id!)}
       ORDER BY b.scheduled_at ASC NULLS LAST, b.created_at DESC
     `;
 
@@ -53,8 +53,8 @@ export async function GET() {
 // Creates as 'pending' — tutor must ACCEPT before wallet is charged
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { gig_id, scheduled_at } = await req.json();
     if (!gig_id) return NextResponse.json({ error: 'gig_id is required' }, { status: 400 });
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     if (!gig) return NextResponse.json({ error: 'Gig not found or inactive' }, { status: 404 });
 
     // Can't book your own gig
-    if (gig.tutor_id === session.id) {
+    if (gig.tutor_id === parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'You cannot book your own gig' }, { status: 400 });
     }
 
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     const price = parseFloat(gig.price_per_session);
     if (price > 0) {
       const transactions = await sql`
-        SELECT type, amount FROM wallet_transactions WHERE user_id = ${session.id}
+        SELECT type, amount FROM wallet_transactions WHERE user_id = ${parseInt(session.user.id!)}
       `;
       const credits = transactions.filter((t) => t.type === 'credit').reduce((s: number, t) => s + parseFloat(t.amount), 0);
       const debits  = transactions.filter((t) => t.type === 'debit').reduce((s: number, t) => s + parseFloat(t.amount), 0);
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     const [booking] = await sql`
       INSERT INTO bookings (gig_id, student_id, scheduled_at, status)
-      VALUES (${gig_id}, ${session.id}, ${scheduled_at ?? null}, 'pending')
+      VALUES (${gig_id}, ${parseInt(session.user.id!)}, ${scheduled_at ?? null}, 'pending')
       RETURNING *
     `;
 

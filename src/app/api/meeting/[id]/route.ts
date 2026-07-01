@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/meeting/[id] — Get meeting details for a confirmed booking
 export async function GET(
@@ -8,8 +8,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const bookingId = parseInt(id);
@@ -39,7 +39,7 @@ export async function GET(
     }
 
     // Only tutor or student of this booking can access
-    if (session.id !== booking.tutor_id && session.id !== booking.student_id) {
+    if (parseInt(session.user.id!) !== booking.tutor_id && parseInt(session.user.id!) !== booking.student_id) {
       return NextResponse.json({ error: 'You do not have access to this meeting' }, { status: 403 });
     }
 
@@ -56,7 +56,7 @@ export async function GET(
     const roomName = `PeerGig-${booking.booking_id}-${booking.gig_title.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20)}`;
 
     // Determine user role
-    const role = session.id === booking.tutor_id ? 'tutor' : 'student';
+    const role = parseInt(session.user.id!) === booking.tutor_id ? 'tutor' : 'student';
 
     return NextResponse.json({
       booking_id: booking.booking_id,
@@ -68,7 +68,7 @@ export async function GET(
       meet_link: booking.meet_link || `https://meet.jit.si/${roomName}`,
       room_name: roomName,
       role,
-      user_name: session.name,
+      user_name: session.user.name,
     });
   } catch (err) {
     console.error('[GET /api/meeting/[id]]', err);

@@ -5,8 +5,11 @@ import Sidebar from '@/components/Sidebar';
 import TopNavBar from '@/components/TopNavBar';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { CldUploadWidget } from 'next-cloudinary';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -99,9 +102,32 @@ export default function ProfilePage() {
                       className="object-cover" 
                       src={user?.avatar_url || 'https://lh3.googleusercontent.com/a/default-user'} 
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                       <span className="material-symbols-outlined text-white">photo_camera</span>
-                    </div>
+                    <CldUploadWidget 
+                      uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "app_uploads"}
+                      onSuccess={async (result: any) => {
+                        const newUrl = result?.info?.secure_url;
+                        if (newUrl) {
+                          setFormData((prev) => ({ ...prev, avatar_url: newUrl }));
+                          setUser((prev: any) => ({ ...prev, avatar_url: newUrl }));
+                          // Auto save when picture is clicked
+                          fetch('/api/users/me', {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ avatar_url: newUrl })
+                          }).then(() => {
+                            router.refresh();
+                          });
+                          setMessage({ type: 'success', text: 'Avatar updated!' });
+                          setTimeout(() => setMessage(null), 3000);
+                        }
+                      }}
+                    >
+                      {({ open }) => (
+                        <div onClick={() => open()} className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                           <span className="material-symbols-outlined text-white">photo_camera</span>
+                        </div>
+                      )}
+                    </CldUploadWidget>
                   </div>
                   <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
                 </div>
@@ -168,13 +194,39 @@ export default function ProfilePage() {
                         />
                       </div>
                       <div className="space-y-1.5 font-inter">
-                        <label className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider ml-1">Avatar Image URL</label>
-                        <input 
-                          className="w-full bg-surface-container-low border-b border-outline-variant focus:border-primary focus:ring-0 px-4 py-3 text-on-surface rounded-t-lg transition-colors outline-none" 
-                          type="text" 
-                          value={formData.avatar_url}
-                          onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
-                        />
+                        <label className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider ml-1">Profile Avatar</label>
+                        <CldUploadWidget 
+                          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "app_uploads"}
+                          onSuccess={async (result: any) => {
+                            if (result?.info?.secure_url) {
+                              setFormData((prev) => ({ ...prev, avatar_url: result.info.secure_url }));
+                              setUser((prev: any) => ({ ...prev, avatar_url: result.info.secure_url }));
+                              await fetch('/api/users/me', {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ avatar_url: result.info.secure_url })
+                              });
+                              router.refresh();
+                            }
+                          }}
+                        >
+                          {({ open }) => (
+                            <button
+                              type="button"
+                              onClick={() => open()}
+                              className="w-full bg-surface-container-low border-b border-outline-variant hover:border-primary hover:bg-surface-container transition-colors px-4 py-3 text-on-surface rounded-t-lg flex items-center justify-center gap-2 font-semibold"
+                            >
+                              <span className="material-symbols-outlined">cloud_upload</span>
+                              {formData.avatar_url ? 'Change Avatar Image' : 'Upload Avatar Image'}
+                            </button>
+                          )}
+                        </CldUploadWidget>
+                        {formData.avatar_url && (
+                          <p className="text-[10px] text-green-600 font-bold ml-1 flex items-center gap-1 mt-1">
+                            <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                            Image uploaded successfully
+                          </p>
+                        )}
                       </div>
                     </div>
                   </section>

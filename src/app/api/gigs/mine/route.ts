@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/gigs/mine — tutor's own gigs with booking counts
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const gigs = await sql`
       SELECT
@@ -14,7 +14,7 @@ export async function GET() {
         COUNT(b.id) FILTER (WHERE b.status != 'cancelled') AS booking_count
       FROM gigs g
       LEFT JOIN bookings b ON b.gig_id = g.id
-      WHERE g.tutor_id = ${session.id}
+      WHERE g.tutor_id = ${parseInt(session.user.id!)}
       GROUP BY g.id
       ORDER BY g.created_at DESC
     `;

@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
+import { sendEmail } from '@/lib/email';
+import { getBookingPendingTutorHtml, getBookingPendingStudentHtml } from '@/lib/email-templates';
 
 // POST /api/payment/verify — Verify Razorpay payment and create booking
 // ESCROW: Student is debited, but tutor is NOT credited until they accept
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const {
       razorpay_order_id,
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // Payment verified! Create the booking
     const [gig] = await sql`
-      SELECT g.*, u.name AS tutor_name
+      SELECT g.*, u.name AS tutor_name, u.email AS tutor_email
       FROM gigs g JOIN users u ON u.id = g.tutor_id
       WHERE g.id = ${gig_id}
     `;
@@ -42,7 +44,7 @@ export async function POST(req: NextRequest) {
     // Create booking as pending (tutor still needs to accept)
     const [booking] = await sql`
       INSERT INTO bookings (gig_id, student_id, scheduled_at, status)
-      VALUES (${gig_id}, ${session.id}, ${scheduled_at ?? null}, 'pending')
+      VALUES (${gig_id}, ${parseInt(session.user.id!)}, ${scheduled_at ?? null}, 'pending')
       RETURNING *
     `;
 
@@ -50,8 +52,25 @@ export async function POST(req: NextRequest) {
     // Tutor will be credited ONLY when they accept the booking
     await sql`
       INSERT INTO wallet_transactions (user_id, amount, type, description)
-      VALUES (${session.id}, ${price}, 'debit', ${'Payment held: ' + gig.title + ' (Order: ' + razorpay_order_id + ')'})
+      VALUES (${parseInt(session.user.id!)}, ${price}, 'debit', ${'Payment held: ' + gig.title + ' (Order: ' + razorpay_order_id + ')'})
     `;
+
+    // Send emails
+    if (gig.tutor_email) {
+      await sendEmail({
+        to: gig.tutor_email,
+        subject: "New Booking Request! 🚀",
+        html: getBookingPendingTutorHtml(gig.tutor_name, gig.title)
+      }).catch(console.error);
+    }
+    
+    if (session.user.email && session.user.name) {
+      await sendEmail({
+        to: session.user.email,
+        subject: "Payment Verified - Booking Pending ✅",
+        html: getBookingPendingStudentHtml(session.user.name, gig.title)
+      }).catch(console.error);
+    }
 
     return NextResponse.json({
       success: true,

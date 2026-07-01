@@ -1,23 +1,24 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
+import { pusherServer } from '@/lib/pusher';
 
 // GET /api/messages — Get list of conversations
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     // Fetch unique conversation partners and their last message
     const conversations = await sql`
       WITH peer_messages AS (
         SELECT 
-          CASE WHEN sender_id = ${session.id} THEN receiver_id ELSE sender_id END AS peer_id,
+          CASE WHEN sender_id = ${parseInt(session.user.id!)} THEN receiver_id ELSE sender_id END AS peer_id,
           content,
           created_at,
           is_read
         FROM messages
-        WHERE sender_id = ${session.id} OR receiver_id = ${session.id}
+        WHERE sender_id = ${parseInt(session.user.id!)} OR receiver_id = ${parseInt(session.user.id!)}
       ),
       latest_messages AS (
         SELECT 
@@ -51,8 +52,8 @@ export async function GET() {
 // POST /api/messages — Send a message
 export async function POST(req: Request) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { receiver_id, content } = await req.json();
     if (!receiver_id || !content) {
@@ -61,9 +62,15 @@ export async function POST(req: Request) {
 
     const [message] = await sql`
       INSERT INTO messages (sender_id, receiver_id, content)
-      VALUES (${session.id}, ${receiver_id}, ${content})
+      VALUES (${parseInt(session.user.id!)}, ${receiver_id}, ${content})
       RETURNING *
     `;
+
+    try {
+      await pusherServer.trigger(`user-${receiver_id}`, 'new-message', message);
+    } catch (e) {
+      console.error('Pusher trigger error:', e);
+    }
 
     return NextResponse.json({ message });
   } catch (err) {

@@ -1,25 +1,25 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/users/me — current user profile + stats
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const [user] = await sql`SELECT * FROM users WHERE id = ${session.id}`;
+    const [user] = await sql`SELECT * FROM users WHERE id = ${parseInt(session.user.id!)}`;
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     // Compute stats
     const [{ active_gigs }] = await sql`
-      SELECT COUNT(*) AS active_gigs FROM gigs WHERE tutor_id = ${session.id} AND is_active = TRUE
+      SELECT COUNT(*) AS active_gigs FROM gigs WHERE tutor_id = ${parseInt(session.user.id!)} AND is_active = TRUE
     `;
 
     const [{ total_earned }] = await sql`
       SELECT COALESCE(SUM(amount), 0) AS total_earned
       FROM wallet_transactions
-      WHERE user_id = ${session.id} AND type = 'credit'
+      WHERE user_id = ${parseInt(session.user.id!)} AND type = 'credit'
     `;
 
     return NextResponse.json({
@@ -38,8 +38,8 @@ export async function GET() {
 // PATCH /api/users/me — update profile
 export async function PATCH(req: Request) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
     const { name, bio, avatar_url } = body;
@@ -61,7 +61,7 @@ export async function PATCH(req: Request) {
         name = COALESCE(${name}, name),
         bio = COALESCE(${bio}, bio),
         avatar_url = COALESCE(${avatar_url}, avatar_url)
-      WHERE id = ${session.id}
+      WHERE id = ${parseInt(session.user.id!)}
       RETURNING *
     `;
 

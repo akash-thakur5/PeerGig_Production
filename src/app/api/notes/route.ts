@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const userId = parseInt(session.user.id!);
     const notes = await sql`
-      SELECT * FROM notes 
-      WHERE user_id = ${session.id} 
-      ORDER BY created_at DESC
+      SELECT DISTINCT n.* FROM notes n
+      LEFT JOIN bookings b ON n.gig_id = b.gig_id
+      WHERE n.user_id = ${userId} 
+         OR (b.student_id = ${userId} AND b.status = 'confirmed')
+      ORDER BY n.created_at DESC
     `;
 
     return NextResponse.json({ notes });
@@ -22,18 +25,20 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { title, subject, tutor_name } = await req.json();
+    const { title, subject, tutor_name, content_url, gig_id } = await req.json();
 
     if (!title || !subject) {
       return NextResponse.json({ error: 'Title and subject are required' }, { status: 400 });
     }
 
+    const userId = parseInt(session.user.id!);
+
     const [note] = await sql`
-      INSERT INTO notes (user_id, title, subject, tutor_name)
-      VALUES (${session.id}, ${title}, ${subject}, ${tutor_name ?? null})
+      INSERT INTO notes (user_id, title, subject, tutor_name, content_url, gig_id)
+      VALUES (${userId}, ${title}, ${subject}, ${tutor_name ?? null}, ${content_url ?? null}, ${gig_id ? parseInt(gig_id) : null})
       RETURNING *
     `;
 

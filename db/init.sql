@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   id           SERIAL PRIMARY KEY,
   name         TEXT NOT NULL,
   email        TEXT UNIQUE NOT NULL,
+  password_hash TEXT,
   role         TEXT NOT NULL DEFAULT 'student' CHECK (role IN ('student')),
   avatar_url   TEXT,
   bio          TEXT,
@@ -97,6 +98,7 @@ CREATE TABLE IF NOT EXISTS notes (
   title        TEXT NOT NULL,
   subject      TEXT NOT NULL,
   tutor_name   TEXT,
+  gig_id       INTEGER REFERENCES gigs(id) ON DELETE SET NULL,
   content_url  TEXT,
   created_at   TIMESTAMPTZ DEFAULT NOW()
 );

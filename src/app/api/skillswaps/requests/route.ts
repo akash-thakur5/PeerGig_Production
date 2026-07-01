@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/skillswaps/requests — Fetch negotiations (incoming/outgoing) for the user
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const requests = await sql`
       SELECT 
@@ -21,7 +21,7 @@ export async function GET() {
       JOIN skill_offers o ON o.id = r.skill_offer_id
       JOIN users u_init ON u_init.id = r.initiator_id
       JOIN users u_recv ON u_recv.id = r.receiver_id
-      WHERE r.initiator_id = ${session.id} OR r.receiver_id = ${session.id}
+      WHERE r.initiator_id = ${parseInt(session.user.id!)} OR r.receiver_id = ${parseInt(session.user.id!)}
       ORDER BY r.created_at DESC
     `;
 
@@ -35,8 +35,8 @@ export async function GET() {
 // POST /api/skillswaps/requests — Propose a swap
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { skill_offer_id, initiator_skill_offered, initiator_slot_choice } = await req.json();
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Check if user has enough swap credits (Cost: 10)
-    const [user] = await sql`SELECT swap_credits FROM users WHERE id = ${session.id}`;
+    const [user] = await sql`SELECT swap_credits FROM users WHERE id = ${parseInt(session.user.id!)}`;
     if (!user || user.swap_credits < 10) {
       return NextResponse.json({ 
         error: `Insufficient Swap Credits. You need 10 credits to propose a swap (Current: ${user?.swap_credits || 0}). Attend paid gigs to earn more!` 
@@ -56,17 +56,17 @@ export async function POST(req: NextRequest) {
     const [offer] = await sql`SELECT user_id FROM skill_offers WHERE id = ${skill_offer_id}`;
     if (!offer) return NextResponse.json({ error: 'Skill offer not found' }, { status: 404 });
     
-    if (offer.user_id === session.id) {
+    if (offer.user_id === parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'You cannot swap with yourself' }, { status: 400 });
     }
 
     // 3. Deduct 10 credits and create request in a transaction
     const [request] = await sql.begin(async (sql) => {
-      await sql`UPDATE users SET swap_credits = swap_credits - 10 WHERE id = ${session.id}`;
+      await sql`UPDATE users SET swap_credits = swap_credits - 10 WHERE id = ${parseInt(session.user.id!)}`;
       
       const [res] = await sql`
         INSERT INTO skillswap_requests (initiator_id, receiver_id, skill_offer_id, initiator_skill_offered, status, initiator_slot_choice)
-        VALUES (${session.id}, ${offer.user_id}, ${skill_offer_id}, ${initiator_skill_offered}, 'pending', ${initiator_slot_choice || null})
+        VALUES (${parseInt(session.user.id!)}, ${offer.user_id}, ${skill_offer_id}, ${initiator_skill_offered}, 'pending', ${initiator_slot_choice || null})
         RETURNING *
       `;
       return [res];

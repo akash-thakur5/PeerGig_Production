@@ -5,6 +5,7 @@ import Image from "next/image";
 import Sidebar from "@/components/Sidebar";
 import TopNavBar from "@/components/TopNavBar";
 import Link from "next/link";
+import { getPusherClient } from "@/lib/pusher";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Peer {
@@ -31,42 +32,24 @@ interface CurrentUser {
   avatarUrl: string;
 }
 
-// ─── Static feed posts ───────────────────────────────────────────────────────
-const FEED_POSTS = [
-  {
-    id: 1,
-    author: "Arjun Mehta",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLGFj3bFY26EelUWXNFUFVCj3rV7dseE-nG46kvlzbh0hQj_MW-kBUrlBRipo_WQqH3i0wRVg-RecKEHz9ouDcKYuKopt8ZkftCW5lVfNhAMXKIuCuhRoZu4JdGzO-Mq4B6euGNwZgz2CNIoQqqn9oA0X9ATu9bA2tQX5Wj3naOSGNn4vmvxmfHUdsjzktlcXAVi6evVjg7tKA7wofXxOBeoGUI1aJicEu-zuBeozCH2TopgagBaVU0MmtNDTghpU6c976tYBrkJ0",
-    role: "Senior",
-    timeAgo: "2h ago",
-    title: "My 2024 Roadmap for Full-Stack Mastery",
-    body: "If you're looking to level up this year, focus on deep-diving into Next.js App Router and understanding distributed systems. Don't just build apps, build scalable architecture. Here's my personal checklist for senior-level proficiency...",
-    upvotes: 1243,
-    comments: 42,
-  },
-  {
-    id: 2,
-    author: "Priya Sharma",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuAkDgGbD1vPmNA7mjkFoI1W1VDDj5Fa2UKVUSuybzRbkisulSDYHvdyyQwZlIi5kU2atWO_jfcxAp5M2A4jl7GTzcFdIM1eNIxvAGs44GSNwsEkBKX6sl6rMVEuiuMZeOukVOHhYtrGPHI8Jvuypz8B6bMbzZSE7qaDSEcilbd6syMS8ZiDOg-rjes_oEHEGYKEf_cePi2pRt1_es20UPgxk47clUv2nZy6Rj0NgxYlQWPHFKp0SZJVqkpn47zWfd400ka8wYhyAyI",
-    role: "Learner",
-    timeAgo: "5h ago",
-    title: "How teaching Electrostatics made me understand it 10x better",
-    body: "I was struggling with Class 12 Physics myself. After posting a gig to teach it on PeerGig, I had to break down every concept from scratch. That exercise alone gave me more clarity than 3 months of self-study. Highly recommend everyone try teaching what you're learning.",
-    upvotes: 856,
-    comments: 18,
-  },
-  {
-    id: 3,
-    author: "Arjun Mehta",
-    avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBLGFj3bFY26EelUWXNFUFVCj3rV7dseE-nG46kvlzbh0hQj_MW-kBUrlBRipo_WQqH3i0wRVg-RecKEHz9ouDcKYuKopt8ZkftCW5lVfNhAMXKIuCuhRoZu4JdGzO-Mq4B6euGNwZgz2CNIoQqqn9oA0X9ATu9bA2tQX5Wj3naOSGNn4vmvxmfHUdsjzktlcXAVi6evVjg7tKA7wofXxOBeoGUI1aJicEu-zuBeozCH2TopgagBaVU0MmtNDTghpU6c976tYBrkJ0",
-    role: "Senior",
-    timeAgo: "1d ago",
-    title: "DSA Tip: Stop memorizing, start pattern-matching",
-    body: "After clearing 5 coding interviews this year, here's what I learned — there are only about 15 core patterns in DSA (sliding window, two-pointer, BFS/DFS, DP, etc.). Once you recognise the pattern, the solution becomes obvious. I'll share my pattern sheet in the comments.",
-    upvotes: 2104,
-    comments: 93,
-  },
-];
+interface Community {
+  id: number;
+  name: string;
+  description: string;
+  member_count: number;
+  is_member: boolean;
+}
+
+interface CommunityPost {
+  id: number;
+  author: string;
+  avatar: string;
+  role: string;
+  title: string;
+  content: string;
+  upvotes: number;
+  created_at: string;
+}
 
 function timeAgo(dateStr: string) {
   const date = new Date(dateStr);
@@ -81,20 +64,42 @@ function timeAgo(dateStr: string) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function PeerConnectPage() {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  
+  // Messaging state
   const [peers, setPeers] = useState<Peer[]>([]);
   const [activePeer, setActivePeer] = useState<Peer | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMsg, setNewMsg] = useState("");
   const [sending, setSending] = useState(false);
-  const [view, setView] = useState<"feed" | "chat">("feed");
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  
+  // Community state
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [activeCommunity, setActiveCommunity] = useState<Community | null>(null);
+  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
   const [postText, setPostText] = useState("");
-  const [votes, setVotes] = useState<Record<number, number>>(() =>
-    Object.fromEntries(FEED_POSTS.map((p) => [p.id, p.upvotes]))
-  );
+  
+  // Create Community Modal
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newCommunityName, setNewCommunityName] = useState("");
+  const [newCommunityDesc, setNewCommunityDesc] = useState("");
+  
+  // UI state
+  const [view, setView] = useState<"feed" | "chat">("feed");
+  const [votes, setVotes] = useState<Record<number, number>>({});
   const [voted, setVoted] = useState<Record<number, "up" | "down" | null>>({});
-  const [posts, setPosts] = useState(FEED_POSTS);
+  
   const chatBottomRef = useRef<HTMLDivElement>(null);
-  const pollRef = useRef<NodeJS.Timeout | null>(null);
+  const activePeerRef = useRef<Peer | null>(null);
+
+  // Keep ref in sync for Pusher callback
+  useEffect(() => {
+    activePeerRef.current = activePeer;
+  }, [activePeer]);
 
   // ── Load current user ──
   useEffect(() => {
@@ -106,7 +111,7 @@ export default function PeerConnectPage() {
       .catch(() => {});
   }, []);
 
-  // ── Load conversations list ──
+  // ── Load Data ──
   const loadPeers = () => {
     fetch("/api/messages")
       .then((r) => r.json())
@@ -114,9 +119,50 @@ export default function PeerConnectPage() {
       .catch(() => {});
   };
 
-  useEffect(() => { loadPeers(); }, []);
+  const loadCommunities = () => {
+    fetch("/api/communities")
+      .then(r => r.json())
+      .then(d => { 
+        if (d.communities) {
+          setCommunities(d.communities);
+          if (!activeCommunity && d.communities.length > 0) {
+            openCommunity(d.communities[0]);
+          }
+        }
+      })
+      .catch(() => {});
+  };
 
-  // ── Load + poll messages for active peer ──
+  useEffect(() => { 
+    loadPeers(); 
+    loadCommunities();
+  }, []);
+
+  // ── Pusher Real-Time Integration ──
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    const pusher = getPusherClient();
+    if (!pusher) return;
+
+    const channelName = `user-${currentUser.id}`;
+    const channel = pusher.subscribe(channelName);
+    
+    channel.bind('new-message', (msg: Message) => {
+      // If viewing the chat with the sender, append instantly
+      if (activePeerRef.current && msg.sender_id === activePeerRef.current.peer_id) {
+        setMessages(prev => [...prev, msg]);
+      }
+      // Always refresh peers list to show unread dot/last message
+      loadPeers();
+    });
+
+    return () => {
+      pusher.unsubscribe(channelName);
+    };
+  }, [currentUser]);
+
+  // ── Load messages for active peer ──
   const loadMessages = (peerId: number) => {
     fetch(`/api/messages/${peerId}`)
       .then((r) => r.json())
@@ -127,9 +173,45 @@ export default function PeerConnectPage() {
   useEffect(() => {
     if (!activePeer) return;
     loadMessages(activePeer.peer_id);
-    pollRef.current = setInterval(() => loadMessages(activePeer.peer_id), 3000);
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
   }, [activePeer]);
+
+  // ── User Search ──
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setIsSearching(true);
+      fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.users) setSearchResults(d.users);
+        })
+        .finally(() => setIsSearching(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const startNewChat = (user: any) => {
+    const existing = peers.find(p => p.peer_id === user.id);
+    if (existing) {
+      openChat(existing);
+    } else {
+      const newPeer: Peer = {
+        peer_id: user.id,
+        peer_name: user.name,
+        peer_avatar: user.avatar_url,
+        last_message: "Draft...",
+        last_message_time: new Date().toISOString(),
+        is_read: true
+      };
+      setPeers(prev => [newPeer, ...prev]);
+      openChat(newPeer);
+    }
+    setSearchQuery("");
+    setSearchResults([]);
+  };
 
   // ── Scroll to bottom on new messages ──
   useEffect(() => {
@@ -140,16 +222,30 @@ export default function PeerConnectPage() {
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMsg.trim() || !activePeer || sending) return;
+    
+    const msgText = newMsg.trim();
+    setNewMsg(""); // Optimistic clear
     setSending(true);
+
+    // Optimistic UI append
+    if (currentUser) {
+      setMessages(prev => [...prev, {
+        id: Date.now(),
+        sender_id: currentUser.id,
+        receiver_id: activePeer.peer_id,
+        content: msgText,
+        created_at: new Date().toISOString(),
+        is_read: false
+      }]);
+    }
+
     try {
       const res = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ receiver_id: activePeer.peer_id, content: newMsg.trim() }),
+        body: JSON.stringify({ receiver_id: activePeer.peer_id, content: msgText }),
       });
       if (res.ok) {
-        setNewMsg("");
-        loadMessages(activePeer.peer_id);
         loadPeers();
       }
     } finally {
@@ -157,14 +253,88 @@ export default function PeerConnectPage() {
     }
   };
 
-  // ── Open chat with a peer ──
   const openChat = (peer: Peer) => {
     setActivePeer(peer);
     setMessages([]);
     setView("chat");
   };
 
-  // ── Vote ──
+  // ── Community Actions ──
+  const openCommunity = (comm: Community) => {
+    setActiveCommunity(comm);
+    setView("feed");
+    fetch(`/api/communities/${comm.id}/posts`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.posts) {
+          setCommunityPosts(d.posts);
+          const initialVotes: Record<number, number> = {};
+          d.posts.forEach((p: CommunityPost) => initialVotes[p.id] = p.upvotes);
+          setVotes(v => ({ ...v, ...initialVotes }));
+        }
+      });
+  };
+
+  const toggleJoinCommunity = async () => {
+    if (!activeCommunity) return;
+    try {
+      const res = await fetch(`/api/communities/${activeCommunity.id}/join`, { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setActiveCommunity(prev => prev ? { ...prev, is_member: data.joined, member_count: prev.member_count + (data.joined ? 1 : -1) } : null);
+        loadCommunities();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleCreateCommunity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCommunityName.trim()) return;
+    try {
+      const res = await fetch("/api/communities", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newCommunityName, description: newCommunityDesc })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNewCommunityName("");
+        setNewCommunityDesc("");
+        setShowCreateModal(false);
+        loadCommunities();
+        openCommunity({ ...data.community, is_member: true, member_count: 1 });
+      } else {
+        const err = await res.json();
+        alert(err.error || "Failed to create community");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handlePost = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!postText.trim() || !activeCommunity || !activeCommunity.is_member) return;
+    
+    try {
+      const res = await fetch(`/api/communities/${activeCommunity.id}/posts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: postText.trim() })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCommunityPosts(prev => [data.post, ...prev]);
+        setVotes(v => ({ ...v, [data.post.id]: data.post.upvotes }));
+        setPostText("");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleVote = (postId: number, dir: "up" | "down") => {
     const prev = voted[postId];
     setVoted((v) => ({ ...v, [postId]: prev === dir ? null : dir }));
@@ -173,28 +343,8 @@ export default function PeerConnectPage() {
       [postId]:
         prev === dir
           ? v[postId] + (dir === "up" ? -1 : 1)
-          : v[postId] + (dir === "up" ? (prev === "down" ? 2 : 1) : prev === "up" ? -2 : -1),
+          : (v[postId] || 0) + (dir === "up" ? (prev === "down" ? 2 : 1) : prev === "up" ? -2 : -1),
     }));
-  };
-
-  // ── Post ──
-  const handlePost = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!postText.trim() || !currentUser) return;
-    const newPost = {
-      id: Date.now(),
-      author: currentUser.name,
-      avatar: currentUser.avatarUrl,
-      role: "Member",
-      timeAgo: "Just now",
-      title: postText.trim().slice(0, 80),
-      body: postText.trim(),
-      upvotes: 0,
-      comments: 0,
-    };
-    setPosts((prev) => [newPost, ...prev]);
-    setVotes((v) => ({ ...v, [newPost.id]: 0 }));
-    setPostText("");
   };
 
   return (
@@ -209,16 +359,55 @@ export default function PeerConnectPage() {
 
           {/* ── LEFT PANE: Direct Messages ── */}
           <section className="hidden lg:flex w-72 shrink-0 flex-col bg-stone-50 border-r border-stone-200/60">
-            <div className="p-5 border-b border-stone-200/60">
+            <div className="p-5 pb-4 border-b border-stone-200/60">
               <h2 className="font-headline text-base font-bold text-on-surface tracking-tight">Peer Messages</h2>
-              <p className="text-xs text-secondary mt-0.5">{peers.length} conversation{peers.length !== 1 && "s"}</p>
+              <div className="relative mt-3">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-[18px]">search</span>
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  placeholder="Search peers by name..." 
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-stone-200 rounded-xl text-xs outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                />
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {peers.length === 0 ? (
+              {searchQuery.trim() ? (
+                <div className="py-2">
+                  {isSearching ? (
+                    <p className="text-xs text-center text-stone-400 py-4">Searching...</p>
+                  ) : searchResults.length === 0 ? (
+                    <p className="text-xs text-center text-stone-400 py-4">No users found.</p>
+                  ) : (
+                    searchResults.map(user => (
+                      <button
+                        key={user.id}
+                        onClick={() => startNewChat(user)}
+                        className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-white transition-all"
+                      >
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative shrink-0">
+                          {user.avatar_url ? (
+                            <Image fill className="object-cover" src={user.avatar_url} alt={user.name} sizes="40px" />
+                          ) : (
+                            <div className="w-full h-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">
+                              {user.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="font-bold text-sm text-stone-900 font-headline truncate block">{user.name}</span>
+                          <span className="text-[10px] text-stone-500 truncate block">{user.role || 'Member'}</span>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              ) : peers.length === 0 ? (
                 <div className="p-6 text-center text-secondary">
                   <span className="material-symbols-outlined text-3xl block mb-2 text-stone-300">chat_bubble</span>
-                  <p className="text-xs">No messages yet.<br />Start a chat below!</p>
+                  <p className="text-xs">No messages yet.<br />Search above to start!</p>
                 </div>
               ) : (
                 <div className="py-2">
@@ -262,7 +451,6 @@ export default function PeerConnectPage() {
               )}
             </div>
 
-            {/* Find peers prompt */}
             <div className="p-4 border-t border-stone-200/60">
               <p className="text-xs text-secondary text-center mb-2">Message a peer from their profile</p>
               <Link href="/search" className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary/5 border border-primary/20 text-primary rounded-xl text-xs font-bold font-headline hover:bg-primary/10 transition-colors">
@@ -312,85 +500,134 @@ export default function PeerConnectPage() {
             {/* ── FEED VIEW ── */}
             {view === "feed" && (
               <div className="flex-1 overflow-y-auto">
-                <div className="max-w-2xl mx-auto py-6 px-6 space-y-6">
-                  {/* Compose post */}
-                  <form onSubmit={handlePost} className="bg-stone-50 rounded-2xl border border-stone-200/60 p-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0">
-                        {currentUser?.name.charAt(0) ?? "U"}
-                      </div>
-                      <textarea
-                        value={postText}
-                        onChange={(e) => setPostText(e.target.value)}
-                        placeholder="Share something with your peers — a tip, resource, or question..."
-                        rows={2}
-                        className="flex-1 bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-secondary/60 resize-none outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
-                      />
-                    </div>
-                    <div className="flex justify-end">
-                      <button
-                        type="submit"
-                        disabled={!postText.trim()}
-                        className="flex items-center gap-2 px-5 py-2 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl text-xs font-bold font-headline uppercase tracking-wider hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:translate-y-0"
-                      >
-                        <span className="material-symbols-outlined text-sm">send</span>
-                        Post
-                      </button>
-                    </div>
-                  </form>
-
-                  {/* Feed posts */}
-                  {posts.map((post) => (
-                    <article key={post.id} className="bg-surface-container-lowest rounded-2xl p-6 border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="relative w-10 h-10 shrink-0">
-                          <Image
-                            className="rounded-full object-cover ring-2 ring-white"
-                            fill
-                            src={post.avatar}
-                            alt={post.author}
-                            sizes="40px"
-                          />
-                        </div>
+                {!activeCommunity ? (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-8 mt-20 text-secondary">
+                    <span className="material-symbols-outlined text-6xl text-stone-200 mb-4">groups</span>
+                    <p className="font-headline font-bold text-on-surface text-lg mb-1">Select a Community</p>
+                    <p className="text-sm text-secondary">Pick a community from the right panel to view posts</p>
+                  </div>
+                ) : (
+                  <div className="max-w-2xl mx-auto py-6 px-6 space-y-6">
+                    
+                    {/* Community Header */}
+                    <div className="bg-stone-50 p-6 rounded-2xl border border-stone-200/60 mb-6">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-bold text-sm text-stone-900 font-headline">{post.author}</h4>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-primary bg-orange-50 px-2 py-0.5 rounded">{post.role}</span>
-                            <span className="text-[10px] text-stone-400">• {post.timeAgo}</span>
-                          </div>
+                          <h2 className="text-xl font-black font-headline text-stone-900 flex items-center gap-2">
+                            <span className="text-primary text-2xl leading-none">#</span> {activeCommunity.name}
+                          </h2>
+                          <p className="text-sm text-stone-600 mt-2">{activeCommunity.description || "A place to learn and share."}</p>
+                          <p className="text-xs text-stone-400 mt-2 font-bold uppercase tracking-wider">{activeCommunity.member_count} Members</p>
                         </div>
-                      </div>
-                      <h3 className="font-headline text-base font-bold mb-2 text-on-surface">{post.title}</h3>
-                      <p className="text-stone-600 leading-relaxed text-sm">{post.body}</p>
-                      <div className="flex items-center justify-between pt-4 mt-4 border-t border-stone-100">
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center bg-stone-100 rounded-full overflow-hidden">
-                            <button
-                              onClick={() => handleVote(post.id, "up")}
-                              className={`p-2 transition-colors active:scale-90 ${voted[post.id] === "up" ? "text-primary" : "hover:text-primary"}`}
-                            >
-                              <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: voted[post.id] === "up" ? "'FILL' 1" : "'FILL' 0" }}>arrow_upward</span>
-                            </button>
-                            <span className="text-xs font-bold text-stone-700 px-1">{(votes[post.id] ?? post.upvotes).toLocaleString("en-IN")}</span>
-                            <button
-                              onClick={() => handleVote(post.id, "down")}
-                              className={`p-2 transition-colors active:scale-90 ${voted[post.id] === "down" ? "text-red-500" : "hover:text-red-500"}`}
-                            >
-                              <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: voted[post.id] === "down" ? "'FILL' 1" : "'FILL' 0" }}>arrow_downward</span>
-                            </button>
-                          </div>
-                          <button className="flex items-center gap-1.5 text-stone-400 hover:text-primary transition-colors">
-                            <span className="material-symbols-outlined text-lg">chat_bubble</span>
-                            <span className="text-xs font-bold">{post.comments}</span>
-                          </button>
-                        </div>
-                        <button className="text-stone-400 hover:text-primary transition-colors">
-                          <span className="material-symbols-outlined text-lg">share</span>
+                        <button 
+                          onClick={toggleJoinCommunity}
+                          className={`px-4 py-2 rounded-lg text-xs font-bold font-headline uppercase tracking-wider transition-all ${
+                            activeCommunity.is_member 
+                              ? "bg-stone-200 text-stone-600 hover:bg-red-100 hover:text-red-600"
+                              : "bg-primary text-white hover:bg-primary/90"
+                          }`}
+                        >
+                          {activeCommunity.is_member ? "Leave" : "Join"}
                         </button>
                       </div>
-                    </article>
-                  ))}
-                </div>
+                    </div>
+
+                    {/* Compose post */}
+                    {activeCommunity.is_member ? (
+                      <form onSubmit={handlePost} className="bg-white rounded-2xl border border-stone-200/60 p-4 space-y-3 shadow-sm">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary shrink-0 overflow-hidden relative">
+                            {currentUser?.avatarUrl ? (
+                              <Image fill className="object-cover" src={currentUser.avatarUrl} alt="" sizes="36px" />
+                            ) : (
+                              currentUser?.name.charAt(0) ?? "U"
+                            )}
+                          </div>
+                          <textarea
+                            value={postText}
+                            onChange={(e) => setPostText(e.target.value)}
+                            placeholder={`Post something in ${activeCommunity.name}...`}
+                            rows={2}
+                            className="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-secondary/60 resize-none outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+                          />
+                        </div>
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            disabled={!postText.trim()}
+                            className="flex items-center gap-2 px-5 py-2 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl text-xs font-bold font-headline uppercase tracking-wider hover:-translate-y-0.5 transition-all disabled:opacity-40 disabled:translate-y-0"
+                          >
+                            <span className="material-symbols-outlined text-sm">send</span>
+                            Post
+                          </button>
+                        </div>
+                      </form>
+                    ) : (
+                      <div className="text-center p-4 bg-stone-50 rounded-xl border border-stone-200/60">
+                        <p className="text-sm text-stone-500">You must join this community to post.</p>
+                      </div>
+                    )}
+
+                    {/* Feed posts */}
+                    {communityPosts.length === 0 ? (
+                      <div className="text-center py-10 text-stone-400">
+                        <span className="material-symbols-outlined text-4xl mb-2">inbox</span>
+                        <p>No posts yet. Be the first to post!</p>
+                      </div>
+                    ) : (
+                      communityPosts.map((post) => (
+                        <article key={post.id} className="bg-surface-container-lowest rounded-2xl p-6 border border-stone-100 shadow-sm hover:shadow-md transition-shadow">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="relative w-10 h-10 shrink-0">
+                              {post.avatar ? (
+                                <Image
+                                  className="rounded-full object-cover ring-2 ring-white"
+                                  fill
+                                  src={post.avatar}
+                                  alt={post.author}
+                                  sizes="40px"
+                                />
+                              ) : (
+                                <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                                  {post.author.charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-sm text-stone-900 font-headline">{post.author}</h4>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary bg-orange-50 px-2 py-0.5 rounded">{post.role}</span>
+                                <span className="text-[10px] text-stone-400">• {timeAgo(post.created_at)}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {post.title && <h3 className="font-headline text-base font-bold mb-2 text-on-surface">{post.title}</h3>}
+                          <p className="text-stone-600 leading-relaxed text-sm whitespace-pre-wrap">{post.content}</p>
+                          
+                          <div className="flex items-center justify-between pt-4 mt-4 border-t border-stone-100">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center bg-stone-100 rounded-full overflow-hidden">
+                                <button
+                                  onClick={() => handleVote(post.id, "up")}
+                                  className={`p-2 transition-colors active:scale-90 ${voted[post.id] === "up" ? "text-primary" : "hover:text-primary"}`}
+                                >
+                                  <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: voted[post.id] === "up" ? "'FILL' 1" : "'FILL' 0" }}>arrow_upward</span>
+                                </button>
+                                <span className="text-xs font-bold text-stone-700 px-1">{(votes[post.id] ?? post.upvotes).toLocaleString("en-IN")}</span>
+                                <button
+                                  onClick={() => handleVote(post.id, "down")}
+                                  className={`p-2 transition-colors active:scale-90 ${voted[post.id] === "down" ? "text-red-500" : "hover:text-red-500"}`}
+                                >
+                                  <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: voted[post.id] === "down" ? "'FILL' 1" : "'FILL' 0" }}>arrow_downward</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </article>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -402,16 +639,9 @@ export default function PeerConnectPage() {
                     <span className="material-symbols-outlined text-6xl text-stone-200 mb-4">chat_bubble</span>
                     <p className="font-headline font-bold text-on-surface text-lg mb-1">Select a conversation</p>
                     <p className="text-sm text-secondary">Pick a peer from the left panel to start chatting</p>
-                    {peers.length === 0 && (
-                      <Link href="/search" className="mt-6 flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm font-headline hover:-translate-y-0.5 transition-all">
-                        <span className="material-symbols-outlined">person_search</span>
-                        Find Peers to Message
-                      </Link>
-                    )}
                   </div>
                 ) : (
                   <>
-                    {/* Messages thread */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-3">
                       {messages.length === 0 && (
                         <div className="text-center text-secondary py-10">
@@ -437,8 +667,8 @@ export default function PeerConnectPage() {
                             <div className={`max-w-[70%] ${isMine ? "items-end" : "items-start"} flex flex-col gap-1`}>
                               <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
                                 isMine
-                                  ? "bg-gradient-to-br from-primary to-primary-container text-white rounded-tr-sm"
-                                  : "bg-stone-100 text-stone-800 rounded-tl-sm"
+                                  ? "bg-gradient-to-br from-primary to-primary-container text-white rounded-tr-sm shadow-sm"
+                                  : "bg-stone-100 text-stone-800 rounded-tl-sm shadow-sm"
                               }`}>
                                 {msg.content}
                               </div>
@@ -450,7 +680,6 @@ export default function PeerConnectPage() {
                       <div ref={chatBottomRef} />
                     </div>
 
-                    {/* Message input */}
                     <form onSubmit={sendMessage} className="border-t border-stone-200/60 p-4 flex gap-3 items-end bg-white shrink-0">
                       <textarea
                         value={newMsg}
@@ -474,85 +703,118 @@ export default function PeerConnectPage() {
             )}
           </section>
 
-          {/* ── RIGHT PANE: Online Peers ── */}
+          {/* ── RIGHT PANE: Communities ── */}
           <section className="hidden xl:flex w-64 shrink-0 flex-col bg-stone-50 border-l border-stone-200/60">
-            <div className="p-5 border-b border-stone-200/60">
-              <h2 className="font-headline text-base font-bold text-on-surface tracking-tight">Online Peers</h2>
+            <div className="p-5 border-b border-stone-200/60 flex justify-between items-center">
+              <h2 className="font-headline text-base font-bold text-on-surface tracking-tight">Communities</h2>
+              <button 
+                onClick={() => setShowCreateModal(true)}
+                className="w-7 h-7 bg-primary text-white flex items-center justify-center rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                title="Create Community"
+              >
+                <span className="material-symbols-outlined text-sm">add</span>
+              </button>
             </div>
+            
             <div className="p-4 space-y-3 flex-1 overflow-y-auto">
-              {/* Real users from conversations */}
-              {peers.map((peer) => (
-                <div key={peer.peer_id} className="flex items-center justify-between group">
-                  <div className="flex items-center gap-2.5">
-                    <div className="relative w-9 h-9 shrink-0">
-                      {peer.peer_avatar ? (
-                        <div className="w-9 h-9 rounded-full overflow-hidden relative ring-2 ring-white">
-                          <Image fill className="object-cover" src={peer.peer_avatar} alt={peer.peer_name} sizes="36px" />
-                        </div>
-                      ) : (
-                        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                          {peer.peer_name.charAt(0)}
-                        </div>
-                      )}
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-stone-50 rounded-full" />
+              {communities.length === 0 ? (
+                <p className="text-xs text-stone-500 text-center py-4">No communities yet.</p>
+              ) : (
+                communities.map((comm) => (
+                  <button 
+                    key={comm.id} 
+                    onClick={() => openCommunity(comm)}
+                    className={`w-full text-left flex flex-col gap-1 py-2.5 px-3 rounded-xl transition-all group border ${
+                      activeCommunity?.id === comm.id 
+                        ? 'bg-white border-primary/20 shadow-sm ring-1 ring-primary/10' 
+                        : 'bg-transparent border-transparent hover:bg-white hover:border-stone-200 hover:shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                        activeCommunity?.id === comm.id ? 'bg-primary text-white' : 'bg-orange-100 text-primary'
+                      }`}>
+                        <span className="font-black text-sm">#</span>
+                      </div>
+                      <span className={`font-bold text-sm font-headline truncate ${
+                        activeCommunity?.id === comm.id ? 'text-primary' : 'text-stone-700 group-hover:text-stone-900'
+                      }`}>
+                        {comm.name}
+                      </span>
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-stone-900 group-hover:text-primary transition-colors font-headline leading-none">{peer.peer_name}</p>
-                      <p className="text-[10px] text-stone-400 uppercase tracking-wider mt-0.5">Active</p>
+                    <div className="flex justify-between items-center pl-9">
+                      <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider">{comm.member_count} Members</span>
+                      {comm.is_member && <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>}
                     </div>
-                  </div>
-                  <button onClick={() => openChat(peer)} className="p-1.5 text-primary hover:bg-orange-50 rounded-full transition-all opacity-0 group-hover:opacity-100 active:scale-90">
-                    <span className="material-symbols-outlined text-base">chat_bubble</span>
                   </button>
-                </div>
-              ))}
-
-              {/* Divider & communities */}
-              <div className="pt-4 mt-4 border-t border-stone-200/60">
-                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-3 font-headline">Communities</p>
-                {["Web Dev Seniors", "Advanced Calculus", "UI/UX Enthusiasts"].map((name) => (
-                  <button key={name} className="w-full text-left flex items-center gap-2 py-2.5 px-2 rounded-xl hover:bg-white transition-colors group">
-                    <div className="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center shrink-0">
-                      <span className="text-primary font-bold text-xs">#</span>
-                    </div>
-                    <span className="font-semibold text-xs text-stone-600 group-hover:text-stone-900 font-headline">{name}</span>
-                  </button>
-                ))}
-              </div>
+                ))
+              )}
             </div>
           </section>
 
         </main>
       </div>
+      
+      {/* Create Community Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-900/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-black font-headline text-stone-900">Create Community</h3>
+              <button onClick={() => setShowCreateModal(false)} className="text-stone-400 hover:text-stone-600 transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreateCommunity} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Name</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-primary font-black">#</span>
+                  <input
+                    type="text"
+                    required
+                    maxLength={30}
+                    value={newCommunityName}
+                    onChange={e => setNewCommunityName(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))} // No spaces for community names
+                    placeholder="react-developers"
+                    className="w-full pl-8 pr-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm font-bold font-headline focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                  />
+                </div>
+                <p className="text-[10px] text-stone-400 mt-1 pl-1">No spaces allowed. Use hyphens or underscores.</p>
+              </div>
+              
+              <div>
+                <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">Description (Optional)</label>
+                <textarea
+                  maxLength={150}
+                  value={newCommunityDesc}
+                  onChange={e => setNewCommunityDesc(e.target.value)}
+                  placeholder="A place to discuss React, Next.js, and frontend development."
+                  className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
+                  rows={3}
+                />
+              </div>
+              
+              <button 
+                type="submit"
+                disabled={!newCommunityName.trim()}
+                className="w-full py-3 bg-primary text-white font-bold font-headline rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                Create & Join
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* FAB */}
       <button
-        onClick={() => { setView("feed"); setPostText(""); }}
+        onClick={() => { setView("feed"); document.querySelector('textarea')?.focus(); }}
         className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[60]"
       >
         <span className="material-symbols-outlined text-2xl">create</span>
       </button>
-
-      {/* Mobile Bottom Nav */}
-      <nav className="lg:hidden fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-outline-variant/10 flex justify-around p-3 z-40">
-        <Link className="flex flex-col items-center gap-1 text-secondary hover:text-primary transition-colors" href="/dashboard">
-          <span className="material-symbols-outlined">dashboard</span>
-          <span className="text-[10px] font-bold">Dash</span>
-        </Link>
-        <button onClick={() => setView("feed")} className={`flex flex-col items-center gap-1 transition-colors ${view === "feed" ? "text-primary" : "text-secondary"}`}>
-          <span className="material-symbols-outlined">feed</span>
-          <span className="text-[10px] font-bold">Feed</span>
-        </button>
-        <button onClick={() => setView("chat")} className={`flex flex-col items-center gap-1 transition-colors relative ${view === "chat" ? "text-primary" : "text-secondary"}`}>
-          <span className="material-symbols-outlined">chat</span>
-          {peers.some((p) => !p.is_read) && <span className="absolute top-0 right-2 w-2 h-2 bg-primary rounded-full" />}
-          <span className="text-[10px] font-bold">Chat</span>
-        </button>
-        <Link className="flex flex-col items-center gap-1 text-secondary hover:text-primary transition-colors" href="/wallet">
-          <span className="material-symbols-outlined">account_balance_wallet</span>
-          <span className="text-[10px] font-bold">Wallet</span>
-        </Link>
-      </nav>
     </div>
   );
 }

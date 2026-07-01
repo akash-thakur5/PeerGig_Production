@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // PATCH /api/skillswaps/requests/[id] — Update status or propose slots
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const body = await req.json();
@@ -16,8 +16,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const [request] = await sql`SELECT * FROM skillswap_requests WHERE id = ${id}`;
     if (!request) return NextResponse.json({ error: 'Request not found' }, { status: 404 });
 
-    const isInitiator = request.initiator_id === session.id;
-    const isReceiver = request.receiver_id === session.id;
+    const isInitiator = request.initiator_id === parseInt(session.user.id!);
+    const isReceiver = request.receiver_id === parseInt(session.user.id!);
 
     if (!isInitiator && !isReceiver) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });

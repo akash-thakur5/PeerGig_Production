@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { CldUploadWidget } from 'next-cloudinary';
 
 export default function PricingMaterialsPage() {
   const router = useRouter();
@@ -13,6 +14,9 @@ export default function PricingMaterialsPage() {
   const [duration, setDuration] = useState('45 mins');
   const [level, setLevel] = useState('Intermediate');
   const [language, setLanguage] = useState('English');
+  
+  const [notesUrl, setNotesUrl] = useState('');
+  const [testSolutionsUrl, setTestSolutionsUrl] = useState('');
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,6 +52,8 @@ export default function PricingMaterialsPage() {
           tags: combinedTags,
           timing_slots: draft.timingSlots,
           language: language,
+          notes_url: notesUrl,
+          test_solutions_url: testSolutionsUrl,
         }),
       });
 
@@ -226,13 +232,27 @@ export default function PricingMaterialsPage() {
                             </div>
                         </div>
                         {/* Dropzone */}
-                        <div className="flex-1 border-2 border-dashed border-outline-variant/40 rounded-2xl flex flex-col items-center justify-center p-8 hover:border-primary/50 transition-colors bg-surface-container-low/30 cursor-pointer">
-                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                                <span className="material-symbols-outlined text-primary text-2xl">cloud_upload</span>
+                        <CldUploadWidget 
+                          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "app_uploads"}
+                          options={{ sources: ['local', 'url'], multiple: false, clientAllowedFormats: ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx'], resourceType: 'auto' }}
+                          onSuccess={(result: any) => {
+                            if (result?.info?.secure_url) {
+                              setNotesUrl(result.info.secure_url);
+                            }
+                          }}
+                        >
+                          {({ open }) => (
+                            <div onClick={() => open()} className="flex-1 border-2 border-dashed border-outline-variant/40 rounded-2xl flex flex-col items-center justify-center p-8 hover:border-primary/50 transition-colors bg-surface-container-low/30 cursor-pointer">
+                                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                                    <span className="material-symbols-outlined text-primary text-2xl">cloud_upload</span>
+                                </div>
+                                <p className="font-bold text-center font-body text-on-surface">
+                                  {notesUrl ? 'Notes Attached Successfully!' : 'Click to upload your notes'}
+                                </p>
+                                <p className="text-xs text-secondary mt-1 font-body">PDF, DOCX up to 20MB</p>
                             </div>
-                            <p className="font-bold text-center font-body text-on-surface">Click to upload your notes</p>
-                            <p className="text-xs text-secondary mt-1 font-body">PDF, DOCX up to 20MB</p>
-                        </div>
+                          )}
+                        </CldUploadWidget>
                     </section>
 
                     {/* Section 5: Assessment */}
@@ -280,15 +300,27 @@ export default function PricingMaterialsPage() {
                             </button>
                         </div>
                         {/* Mini Dropzone */}
-                        <div className="border-2 border-dashed border-outline-variant/40 rounded-xl flex items-center gap-4 p-4 hover:border-primary/50 transition-colors bg-surface-container-low/30 cursor-pointer">
-                            <div className="w-10 h-10 bg-on-tertiary-container/10 rounded-full flex items-center justify-center shrink-0">
-                                <span className="material-symbols-outlined text-tertiary text-xl">fact_check</span>
+                        <CldUploadWidget 
+                          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "app_uploads"}
+                          options={{ sources: ['local', 'url'], multiple: false, clientAllowedFormats: ['png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx'], resourceType: 'auto' }}
+                          onSuccess={(result: any) => {
+                            if (result?.info?.secure_url) {
+                              setTestSolutionsUrl(result.info.secure_url);
+                            }
+                          }}
+                        >
+                          {({ open }) => (
+                            <div onClick={() => open()} className="border-2 border-dashed border-outline-variant/40 rounded-xl flex items-center gap-4 p-4 hover:border-primary/50 transition-colors bg-surface-container-low/30 cursor-pointer">
+                                <div className="w-10 h-10 bg-on-tertiary-container/10 rounded-full flex items-center justify-center shrink-0">
+                                    <span className="material-symbols-outlined text-tertiary text-xl">fact_check</span>
+                                </div>
+                                <div className="text-on-surface">
+                                    <p className="text-sm font-bold font-body">{testSolutionsUrl ? 'Solutions Attached!' : 'Upload Solutions'}</p>
+                                    <p className="text-[10px] text-secondary font-body">Correct answers for verification</p>
+                                </div>
                             </div>
-                            <div className="text-on-surface">
-                                <p className="text-sm font-bold font-body">Upload Solutions</p>
-                                <p className="text-[10px] text-secondary font-body">Correct answers for verification</p>
-                            </div>
-                        </div>
+                          )}
+                        </CldUploadWidget>
                     </section>
                 </div>
 

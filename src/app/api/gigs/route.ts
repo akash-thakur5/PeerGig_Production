@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/gigs?q=&subject=&page=1&limit=10&sort=&language=
 export async function GET(req: NextRequest) {
@@ -65,12 +65,12 @@ export async function GET(req: NextRequest) {
 // POST /api/gigs — any logged-in student can post a gig (teach what they know)
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // On PeerGig, every student can teach — no role restriction
 
     const body = await req.json();
-    const { title, description, subject, price_per_session, tags, timing_slots, language } = body;
+    const { title, description, subject, price_per_session, tags, timing_slots, language, notes_url, test_solutions_url } = body;
 
     if (!title || !subject || price_per_session == null) {
       return NextResponse.json({ error: 'title, subject, and price_per_session are required' }, { status: 400 });
@@ -78,9 +78,24 @@ export async function POST(req: NextRequest) {
 
     const [gig] = await sql`
       INSERT INTO gigs (tutor_id, title, description, subject, price_per_session, tags, timing_slots, language)
-      VALUES (${session.id}, ${title}, ${description ?? ''}, ${subject}, ${price_per_session}, ${sql.array(tags ?? [])}, ${sql.array(timing_slots ?? [])}, ${language ?? 'English'})
+      VALUES (${parseInt(session.user.id!)}, ${title}, ${description ?? ''}, ${subject}, ${price_per_session}, ${sql.array(tags ?? [])}, ${sql.array(timing_slots ?? [])}, ${language ?? 'English'})
       RETURNING *
     `;
+
+    // Automatically create acquired materials for the gig
+    if (notes_url) {
+      await sql`
+        INSERT INTO notes (user_id, title, subject, tutor_name, gig_id, content_url)
+        VALUES (${parseInt(session.user.id!)}, ${title + ' - Study Notes'}, ${subject}, ${session.user.name ?? null}, ${gig.id}, ${notes_url})
+      `;
+    }
+    
+    if (test_solutions_url) {
+      await sql`
+        INSERT INTO notes (user_id, title, subject, tutor_name, gig_id, content_url)
+        VALUES (${parseInt(session.user.id!)}, ${title + ' - Test Solutions'}, ${subject}, ${session.user.name ?? null}, ${gig.id}, ${test_solutions_url})
+      `;
+    }
 
     return NextResponse.json({ gig }, { status: 201 });
   } catch (err) {

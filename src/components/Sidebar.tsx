@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -55,14 +56,7 @@ export default function Sidebar() {
 
         {/* Logout Button */}
         <button
-          onClick={async () => {
-            try {
-              const res = await fetch('/api/auth/logout', { method: 'POST' });
-              if (res.ok) window.location.href = '/';
-            } catch (err) {
-              console.error('Logout failed:', err);
-            }
-          }}
+          onClick={() => signOut({ callbackUrl: '/login' })}
           className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline text-sm font-semibold uppercase tracking-wider text-secondary hover:bg-red-50 hover:text-red-500 mt-2 text-left w-full group"
         >
           <span className="material-symbols-outlined group-hover:rotate-12 transition-transform leading-none">logout</span>

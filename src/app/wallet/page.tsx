@@ -4,7 +4,14 @@ import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import TopNavBar from '@/components/TopNavBar';
 import Link from 'next/link';
+import Script from 'next/script';
 import { useState, useEffect } from 'react';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 interface Transaction {
   id: number;
@@ -66,25 +73,75 @@ export default function WalletPage() {
     setAddError('');
     setAddSuccess('');
     setAddLoading(true);
+    
     try {
-      const res = await fetch('/api/wallet', {
+      // 1. Create Order via backend
+      const res = await fetch('/api/wallet/topup/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: parseFloat(addAmount), method: addMethod }),
+        body: JSON.stringify({ amount: parseFloat(addAmount) }),
       });
       const data = await res.json();
-      if (!res.ok) { setAddError(data.error ?? 'Failed to add money'); return; }
-      setAddSuccess(`${formatINR(parseFloat(addAmount))} added successfully!`);
-      setAddAmount('');
-      // Re-fetch wallet data
-      const walletRes = await fetch('/api/wallet');
-      const walletJson = await walletRes.json();
-      if (!walletJson.error) setWalletData(walletJson);
-      setTimeout(() => { setShowAddMoney(false); setAddSuccess(''); }, 2000);
+      
+      if (!res.ok) { 
+        setAddError(data.error ?? 'Failed to initiate payment'); 
+        setAddLoading(false);
+        return; 
+      }
+
+      // 2. Initialize Razorpay Modal
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: 'PeerGig',
+        description: 'Wallet Top Up',
+        order_id: data.order.id,
+        handler: async function (response: any) {
+          try {
+            setAddLoading(true);
+            const verifyRes = await fetch('/api/wallet/topup/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                amount: addAmount
+              })
+            });
+            const verifyData = await verifyRes.json();
+            
+            if (verifyData.success) {
+              setAddSuccess(`${formatINR(parseFloat(addAmount))} added successfully!`);
+              setAddAmount('');
+              // Re-fetch wallet data
+              const walletRes = await fetch('/api/wallet');
+              const walletJson = await walletRes.json();
+              if (!walletJson.error) setWalletData(walletJson);
+              setTimeout(() => { setShowAddMoney(false); setAddSuccess(''); }, 2000);
+            } else {
+              setAddError(verifyData.error || 'Payment verification failed');
+            }
+          } catch (err) {
+            setAddError('Payment verification error');
+          } finally {
+            setAddLoading(false);
+          }
+        },
+        theme: { color: '#0F52BA' }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        setAddError(response.error.description);
+      });
+      rzp.open();
     } catch {
       setAddError('Network error — please try again');
     } finally {
-      setAddLoading(false);
+      // Don't set false here, wait for modal closure or handler completion
+      setAddLoading(false); 
     }
   };
 
@@ -101,6 +158,7 @@ export default function WalletPage() {
 
   return (
     <div className="bg-surface text-on-surface font-body selection:bg-primary/20 min-h-screen">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <TopNavBar />
 
       {/* Add Money Modal */}
@@ -154,11 +212,7 @@ export default function WalletPage() {
                     onChange={(e) => setAddMethod(e.target.value)}
                     className="w-full px-4 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl outline-none"
                   >
-                    <option>UPI — GPay</option>
-                    <option>UPI — PhonePe</option>
-                    <option>UPI — Paytm</option>
-                    <option>Net Banking</option>
-                    <option>Debit Card</option>
+                    <option>Razorpay — UPI / Cards</option>
                   </select>
                 </div>
                 {addError && (

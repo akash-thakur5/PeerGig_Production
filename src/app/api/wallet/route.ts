@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/wallet — balance + transaction history
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const transactions = await sql`
       SELECT * FROM wallet_transactions
-      WHERE user_id = ${session.id}
+      WHERE user_id = ${parseInt(session.user.id!)}
       ORDER BY created_at DESC
       LIMIT 50
     `;
@@ -50,8 +50,8 @@ export async function GET() {
 // POST /api/wallet — add money (top-up)
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { amount, method } = await req.json();
     const numAmount = parseFloat(amount);
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     const [transaction] = await sql`
       INSERT INTO wallet_transactions (user_id, amount, type, description)
-      VALUES (${session.id}, ${numAmount}, 'credit', ${'Added via ' + paymentMethod})
+      VALUES (${parseInt(session.user.id!)}, ${numAmount}, 'credit', ${'Added via ' + paymentMethod})
       RETURNING *
     `;
 

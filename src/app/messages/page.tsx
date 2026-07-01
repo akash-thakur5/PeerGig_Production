@@ -14,6 +14,12 @@ export default function MessagesPage() {
   const [threadLoading, setThreadLoading] = useState(false);
   const [newMessage, setNewMessage] = useState('');
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 1. Initial Load: Fetch Conversations & Current User
@@ -75,7 +81,45 @@ export default function MessagesPage() {
     }
   }, [messages, threadLoading]);
 
-  // 4. Send Message
+  // 4. User Search
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setIsSearching(true);
+      fetch(`/api/users/search?q=${encodeURIComponent(searchQuery)}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.users) setSearchResults(d.users);
+        })
+        .finally(() => setIsSearching(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const startNewChat = (user: any) => {
+    const existing = conversations.find(p => p.peer_id === user.id);
+    if (existing) {
+      setActivePeer(existing);
+    } else {
+      const newPeer = {
+        peer_id: user.id,
+        peer_name: user.name,
+        peer_avatar: user.avatar_url,
+        last_message: "Draft...",
+        last_message_time: new Date().toISOString(),
+        is_read: true
+      };
+      setConversations(prev => [newPeer, ...prev]);
+      setActivePeer(newPeer);
+    }
+    setSearchQuery("");
+    setSearchResults([]);
+  };
+
+  // 5. Send Message
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!newMessage.trim() || !activePeer) return;
@@ -158,17 +202,47 @@ export default function MessagesPage() {
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">search</span>
                 <input 
-                  className="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm outline-none font-body" 
-                  placeholder="Search conversations..." 
+                  className="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-sm outline-none font-body focus:ring-1 focus:ring-primary/20" 
+                  placeholder="Search users..." 
                   type="text" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto py-2">
-              {conversations.length === 0 ? (
+              {searchQuery.trim() ? (
+                <div className="px-4">
+                  {isSearching ? (
+                    <p className="text-center text-secondary text-sm py-4">Searching...</p>
+                  ) : searchResults.length === 0 ? (
+                    <p className="text-center text-secondary text-sm py-4">No users found.</p>
+                  ) : (
+                    searchResults.map((user) => (
+                      <div 
+                        key={user.id}
+                        onClick={() => startNewChat(user)}
+                        className="flex items-center gap-4 p-3 mb-1 rounded-2xl hover:bg-gray-50 cursor-pointer transition-all"
+                      >
+                        <div className="relative shrink-0 w-10 h-10">
+                          {user.avatar_url ? (
+                            <Image fill className="rounded-full object-cover" src={user.avatar_url} alt={user.name} sizes="40px" />
+                          ) : (
+                            <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm">{user.name.charAt(0)}</div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-on-surface truncate font-headline text-sm">{user.name}</h3>
+                          <span className="text-[10px] text-secondary truncate">{user.role || 'Member'}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : conversations.length === 0 ? (
                 <div className="text-center py-10 px-6">
-                  <p className="text-secondary text-sm">No conversations yet. Book a session to start chatting!</p>
+                  <p className="text-secondary text-sm">No conversations yet. Search for a user to start chatting!</p>
                 </div>
               ) : (
                 conversations.map((conv) => (
@@ -183,12 +257,17 @@ export default function MessagesPage() {
                         : 'hover:bg-gray-50 border-l-4 border-transparent'
                     }`}>
                       <div className="relative shrink-0 w-12 h-12">
-                        <Image 
-                          alt={conv.peer_name} 
-                          fill
-                          className="rounded-full object-cover" 
-                          src={conv.peer_avatar || 'https://lh3.googleusercontent.com/a/default-user'} 
-                        />
+                        {conv.peer_avatar ? (
+                          <Image 
+                            alt={conv.peer_name} 
+                            fill
+                            className="rounded-full object-cover" 
+                            src={conv.peer_avatar} 
+                            sizes="48px"
+                          />
+                        ) : (
+                          <div className="w-full h-full rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">{conv.peer_name.charAt(0)}</div>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-center mb-0.5">

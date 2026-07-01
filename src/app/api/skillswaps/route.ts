@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/skillswaps — Fetch active skill offers in the marketplace
 export async function GET() {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const offers = await sql`
       SELECT 
@@ -30,8 +30,8 @@ export async function GET() {
 // POST /api/skillswaps — Publish a new skill offer
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { skill_have, skill_want, description, timing_slots } = await req.json();
 
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     const [offer] = await sql`
       INSERT INTO skill_offers (user_id, skill_have, skill_want, description, timing_slots)
-      VALUES (${session.id}, ${skill_have}, ${skill_want}, ${description || ''}, ${timing_slots || '{}'})
+      VALUES (${parseInt(session.user.id!)}, ${skill_have}, ${skill_want}, ${description || ''}, ${timing_slots || '{}'})
       RETURNING *
     `;
 

@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
+import { sendEmail } from '@/lib/email';
+import { getBookingConfirmedHtml, getBookingRejectedHtml } from '@/lib/email-templates';
 
 // PATCH /api/bookings/[id] — update booking status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const { status, meet_link } = await req.json();
@@ -23,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
 
     // Only the tutor or the student can update
-    if (booking.tutor_id !== session.id && booking.student_id !== session.id) {
+    if (booking.tutor_id !== parseInt(session.user.id!) && booking.student_id !== parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -47,8 +49,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 // On reject: set status to cancelled, no wallet impact
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const { action } = await req.json(); // 'accept' or 'reject'
@@ -68,7 +70,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (!booking) return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
 
     // Only the tutor who owns the gig can accept/reject
-    if (booking.tutor_id !== session.id) {
+    if (booking.tutor_id !== parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'You are not the tutor for this gig' }, { status: 403 });
     }
 
@@ -82,7 +84,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       const studentId = booking.student_id;
 
       // Get student info
-      const [student] = await sql`SELECT name FROM users WHERE id = ${studentId}`;
+      const [student] = await sql`SELECT name, email FROM users WHERE id = ${studentId}`;
 
       // Update booking status to confirmed
       const [updated] = await sql`
@@ -95,12 +97,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       if (price > 0) {
         await sql`
           INSERT INTO wallet_transactions (user_id, amount, type, description)
-          VALUES (${session.id}, ${price}, 'credit', ${'Earned: ' + booking.gig_title + ' from ' + (student?.name ?? 'student')})
+          VALUES (${parseInt(session.user.id!)}, ${price}, 'credit', ${'Earned: ' + booking.gig_title + ' from ' + (student?.name ?? 'student')})
         `;
 
         // Update tutor's total_earned
         await sql`
-          UPDATE users SET total_earned = total_earned + ${price} WHERE id = ${session.id}
+          UPDATE users SET total_earned = total_earned + ${price} WHERE id = ${parseInt(session.user.id!)}
         `;
       }
 
@@ -108,6 +110,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       await sql`
         UPDATE users SET swap_credits = swap_credits + 5 WHERE id = ${studentId}
       `;
+
+      if (student?.email) {
+        await sendEmail({
+          to: student.email,
+          subject: "Booking Confirmed! 🎉",
+          html: getBookingConfirmedHtml(student.name, booking.gig_title)
+        }).catch(console.error);
+      }
 
       return NextResponse.json({ booking: updated, message: 'Booking accepted! Payment released to your wallet.' });
     }
@@ -127,8 +137,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       if (price > 0) {
         await sql`
           INSERT INTO wallet_transactions (user_id, amount, type, description)
-          VALUES (${studentId}, ${price}, 'credit', ${'Refund: ' + booking.gig_title + ' — Rejected by ' + session.name})
+          VALUES (${studentId}, ${price}, 'credit', ${'Refund: ' + booking.gig_title + ' — Rejected by ' + session.user.name})
         `;
+      }
+
+      // We need student info to send email
+      const [student] = await sql`SELECT name, email FROM users WHERE id = ${studentId}`;
+      if (student?.email) {
+        await sendEmail({
+          to: student.email,
+          subject: "Booking Declined",
+          html: getBookingRejectedHtml(student.name, booking.gig_title)
+        }).catch(console.error);
       }
 
       return NextResponse.json({ booking: updated, message: 'Booking rejected. Student has been refunded.' });

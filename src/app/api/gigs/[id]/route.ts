@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { getSession } from '@/lib/demo-auth';
+import { auth } from '@/lib/auth';
 
 // GET /api/gigs/[id]
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -28,8 +28,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 // PUT /api/gigs/[id] — update gig (owner only)
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const body = await req.json();
@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const [existing] = await sql`SELECT * FROM gigs WHERE id = ${parseInt(id)}`;
     if (!existing) return NextResponse.json({ error: 'Gig not found' }, { status: 404 });
-    if (existing.tutor_id !== session.id) {
+    if (existing.tutor_id !== parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -64,13 +64,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 // DELETE /api/gigs/[id] — soft delete (set is_active = false)
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getSession();
-    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await auth();
+    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { id } = await params;
     const [existing] = await sql`SELECT tutor_id FROM gigs WHERE id = ${parseInt(id)}`;
     if (!existing) return NextResponse.json({ error: 'Gig not found' }, { status: 404 });
-    if (existing.tutor_id !== session.id) {
+    if (existing.tutor_id !== parseInt(session.user.id!)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
