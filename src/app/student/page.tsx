@@ -2,9 +2,10 @@ import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import TopNavBar from '@/components/TopNavBar';
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import CountdownTimer from '@/components/CountdownTimer';
 import SearchFilters from '@/components/SearchFilters';
+import sql from '@/lib/db';
+import { auth } from '@/lib/auth';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Gig {
@@ -31,30 +32,67 @@ interface Booking {
 // ─── Data Fetching ────────────────────────────────────────────────────────────
 async function getGigs(q = '', subject = '', sort = 'newest', language = ''): Promise<Gig[]> {
   try {
-    const params = new URLSearchParams({ q, subject, sort, language, limit: '50' });
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'}/api/gigs?${params}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.gigs ?? [];
-  } catch {
+    let orderBy = sql`g.created_at DESC`;
+    if (sort === 'price_low') orderBy = sql`g.price_per_session ASC`;
+    else if (sort === 'rating_high') orderBy = sql`u.rating DESC`;
+    else if (sort === 'newly_joined') orderBy = sql`u.created_at DESC`;
+
+    const gigs = await sql`
+      SELECT
+        g.id,
+        g.title,
+        g.description,
+        g.subject,
+        g.price_per_session,
+        g.tags,
+        g.timing_slots,
+        g.language,
+        g.is_active,
+        g.created_at,
+        u.id        AS tutor_id,
+        u.name      AS tutor_name,
+        u.avatar_url AS tutor_avatar,
+        u.rating    AS tutor_rating,
+        u.created_at AS tutor_joined_at
+      FROM gigs g
+      JOIN users u ON u.id = g.tutor_id
+      WHERE g.is_active = TRUE
+        AND (${q} = '' OR g.title ILIKE ${'%' + q + '%'} OR g.description ILIKE ${'%' + q + '%'})
+        AND (${subject} = '' OR g.subject ILIKE ${subject})
+        AND (${language} = '' OR g.language ILIKE ${language})
+      ORDER BY ${orderBy}
+      LIMIT 50
+    `;
+    return gigs as unknown as Gig[];
+  } catch (err) {
+    console.error(err);
     return [];
   }
 }
 
 async function getMyBookings(): Promise<Booking[]> {
   try {
-    const cookieStore = await cookies();
-    const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000'}/api/bookings`, {
-      cache: 'no-store',
-      headers: { Cookie: allCookies },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.learningBookings ?? [];
-  } catch {
+    const session = await auth();
+    if (!session?.user) return [];
+
+    const learningBookings = await sql`
+      SELECT
+        b.*,
+        g.title      AS gig_title,
+        g.subject    AS gig_subject,
+        g.price_per_session,
+        u.name       AS tutor_name,
+        u.avatar_url AS tutor_avatar,
+        'learning'   AS booking_role
+      FROM bookings b
+      JOIN gigs    g ON g.id = b.gig_id
+      JOIN users   u ON u.id = g.tutor_id
+      WHERE b.student_id = ${parseInt(session.user.id!)}
+      ORDER BY b.scheduled_at ASC NULLS LAST, b.created_at DESC
+    `;
+    return learningBookings as unknown as Booking[];
+  } catch (err) {
+    console.error(err);
     return [];
   }
 }

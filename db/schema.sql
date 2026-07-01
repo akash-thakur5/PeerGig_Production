@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS gigs (
   price_per_session NUMERIC(8,2) NOT NULL DEFAULT 0,
   tags             TEXT[] DEFAULT '{}',
   timing_slots     TEXT[] DEFAULT '{}',
+  language         TEXT DEFAULT 'English',
   is_active        BOOLEAN DEFAULT TRUE,
   created_at       TIMESTAMPTZ DEFAULT NOW()
 );
