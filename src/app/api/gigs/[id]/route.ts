@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 }
 
-// DELETE /api/gigs/[id] — soft delete (set is_active = false)
+// DELETE /api/gigs/[id] — hard delete
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
@@ -74,7 +74,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    await sql`UPDATE gigs SET is_active = FALSE WHERE id = ${parseInt(id)}`;
+    await sql`DELETE FROM gigs WHERE id = ${parseInt(id)}`;
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('[DELETE /api/gigs/[id]]', err);
